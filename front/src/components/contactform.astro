@@ -1,0 +1,206 @@
+---
+import { string } from "astro/zod";
+import Button from "./ui/button.astro";
+
+export interface Props {
+  mail: string;
+  id: string;
+  IdList: string[];
+  title: string,
+}
+const {
+  mail,
+  id,
+  IdList,
+  title,
+} = Astro.props;
+---
+
+<form>
+  <input type="checkbox" class="hidden" style="display:none" name="botcheck" />
+  <div class="mb-5">
+    <input
+      type="text"
+      placeholder="Full Name"
+      required
+      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-none focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
+      name="name"
+    />
+    <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
+      Please provide your full name.
+    </div>
+  </div>
+  <div class="mb-5">
+    <label for="email_address" class="sr-only">Email Address</label><input
+      id="email_address"
+      type="email"
+      placeholder="Email Address"
+      name="email"
+      required
+      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-none focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
+    />
+    <div class="empty-feedback text-red-400 text-sm mt-1">
+      Please provide your email address.
+    </div>
+    <div class="invalid-feedback text-red-400 text-sm mt-1">
+      Please provide a valid email address.
+    </div>
+  </div>
+  <div class="mb-3">
+    <textarea
+      name="message"
+      required
+      placeholder="Your Message"
+      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-none h-36 focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
+    ></textarea>
+    <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
+      Please enter your message.
+    </div>
+  </div>
+  <select name={mail} id="mailselect" style="display: none;"></select>
+  <select name={String(IdList)} id="idList" style="display: none;"></select>
+  <select name={id} id="idadvertissement" style="display: none;"></select>
+  <select name={title} id="nameadvertissement" style="display: none;"></select>
+  <Button id="button" type="submit" size="lg" block>Apply</Button>
+  <div id="result" class="mt-3 text-center"></div>
+</form>
+
+<style>
+  .invalid-feedback,
+  .empty-feedback {
+    display: none;
+  }
+
+  .was-validated :placeholder-shown:invalid ~ .empty-feedback {
+    display: block;
+  }
+
+  .was-validated :not(:placeholder-shown):invalid ~ .invalid-feedback {
+    display: block;
+  }
+
+  .is-invalid,
+  .was-validated :invalid {
+    border-color: #dc3545;
+  }
+</style>
+
+<script>
+    const form = document.getElementById("button");
+    const result = document.getElementById("result");
+    const mailselect = document.getElementById("mailselect");
+    const idListselect = document.getElementById("idList");
+    const idadvertissementselect = document.getElementById("idadvertissement");
+  
+    const mail = mailselect.value;
+    const idList = idListselect.value;
+    const idadvertissement = idadvertissementselect.value;
+  
+    mailselect.style.display = "none";
+    idListselect.style.display = "none";
+    idadvertissementselect.style.display = "none";
+  
+    let token = "";
+    let parts = [];
+    let decodedPayload = "";
+    const accessToken = localStorage.getItem("authKey");
+    const cookies = document.cookie.split(";");
+    let authKeyCookieFound = false;
+    for (const cookie of cookies) {
+      parts = cookie.trim().split("=");
+      if (parts[0] === "authKey") {
+        authKeyCookieFound = true;
+        break;
+      }
+    }
+    if (accessToken) {
+      token = accessToken;
+      const tokenParts = token.split(".");
+      decodedPayload = atob(tokenParts[1]);
+    } else {
+      token = parts[1];
+      decodedPayload = token;
+    }
+  
+    const payloadObj = JSON.parse(decodedPayload);
+    console.log(payloadObj.sub);
+  
+    button_apply.addEventListener("click", async function (e) {
+      e.preventDefault();
+      form.classList.add("was-validated");
+      if (!form.checkValidity()) {
+        form.querySelectorAll(":invalid")[0].focus();
+        return;
+      }
+  
+      if (idList !== "null") {
+        if (!idList.includes(payloadObj.sub)) {
+          try {
+            console.log(
+              `http://localhost:3000/advertissements/${String(idadvertissement)}`
+            );
+            await fetch(
+              `http://localhost:3000/advertissements/${String(idadvertissement)}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+                body: JSON.stringify({ IdList: [Number(payloadObj.sub)] }),
+              }
+            );
+  
+            const email = mail;
+            const subject = "Nouvelle demande d'emploi";
+            const message = "Une nouvelle demande d'emploi a été reçue.";
+            console.log("Email sent to:", email);
+            console.log("Subject:", subject);
+            console.log("Message:", message);
+  
+            result.classList.add("text-green-500");
+            result.innerHTML = "Email sent successfully!";
+          } catch (error) {
+            console.error(error);
+            result.classList.add("text-red-500");
+            result.innerHTML = "Error sending email.";
+          }
+        } else {
+          result.classList.add("text-red-500");
+          result.innerHTML = "Number is already in IdList.";
+        }
+      } else {
+        try {
+          await fetch(`http://localhost:3000/advertissements/${String(idadvertissement)}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+  
+          const email = mail;
+          const subject = "Nouvelle demande d'emploi";
+          const message = "Une nouvelle demande d'emploi a été reçue.";
+          console.log("Email sent to:", email);
+          console.log("Subject:", subject);
+          console.log("Message:", message);
+  
+          result.classList.add("text-green-500");
+          result.innerHTML = "Email sent successfully!";
+        } catch (error) {
+          console.error(error);
+          result.classList.add("text-red-500");
+          result.innerHTML = "Error sending email.";
+        }
+      }
+    
+      form.reset();
+      form.classList.remove("was-validated");
+      setTimeout(() => {
+        result.style.display = "none";
+      }, 5000);
+    });
+  </script>
+  
+

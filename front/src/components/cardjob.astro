@@ -1,0 +1,271 @@
+---
+import Contactform from "@components/contactform.astro";
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import { Icon } from "astro-icon";
+
+export interface Props {
+  title: string;
+  body?: string;
+  href?: string;
+  src?: string;
+  alt?: string;
+  entreprise: string;
+  descPost?: string;
+  salaire: string;
+  emplacement?: string;
+  mail: string;
+  num?: string;
+  id: string;
+  IdList: string[];
+}
+const {
+  href,
+  title,
+  body,
+  entreprise,
+  descPost,
+  emplacement,
+  mail,
+  salaire,
+  num,
+  id,
+  IdList,
+} = Astro.props;
+---
+
+<Container>
+  <li class="list-none p-3">
+    <div class="plan">
+      <div class="inner">
+        <p class="title"><strong>{title}</strong></p>
+        <p class="info"><strong>{entreprise}</strong></p>
+        <ul class="features">
+          <li>
+            <span class="icon">
+              <svg
+                height="24"
+                width="24"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                  fill="currentColor"
+                  d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"
+                ></path>
+              </svg>
+            </span>
+            <span><strong>{emplacement}</strong></span>
+          </li>
+          <li>
+            <span class="icon">
+              <svg
+                height="24"
+                width="24"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                  fill="currentColor"
+                  d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"
+                ></path>
+              </svg>
+            </span>
+            <span>{body}</span>
+          </li>
+          <div class="action description">
+            <button class="button" id="toggle-description">Learn more</button>
+          </div>
+          <div class="description-container">
+
+            <Container>
+              <Sectionhead>
+                <Fragment slot="title">
+                 <strong>{entreprise} <br/>
+                </Fragment>
+              </Sectionhead>
+
+              <div class="grid md:grid-cols-2 gap-10 mx-auto max-w-4xl mt-16">
+                <div>
+                  <h2 class="font-medium text-2xl text-gray-800">{title}</h2>
+                  <p class="text-lg leading-relaxed text-slate-500 mt-3">
+                    {body}
+                    <br />
+                    {salaire}
+                  </p>
+                  <div class="mt-5">
+                    <div class="flex items-center mt-2 space-x-2 text-gray-600">
+                      <Icon
+                        class="text-gray-400 w-4 h-4"
+                        name="uil:map-marker"
+                      />
+                      <span>{emplacement}</span>
+                    </div><div
+                      class="flex items-center mt-2 space-x-2 text-gray-600">
+                      <Icon
+                        class="text-gray-400 w-4 h-4"
+                        name="uil:envelope"
+                      /><a href="#">{mail}</a>
+                    </div><div
+                      class="flex items-center mt-2 space-x-2 text-gray-600">
+                      <Icon class="text-gray-400 w-4 h-4" name="uil:phone" /><a
+                        href="#">{num}</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <Contactform {mail} {id} {IdList}/>
+                </div>
+              </div>
+            </Container>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </li>
+</Container>
+
+<style>
+  .description-container {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto;
+    display: none; 
+  }
+
+  #toggle-description {
+    background-color: #000000;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+
+  .plan {
+    text-align: center;
+    border-radius: 16px;
+    box-shadow: 0 30px 30px -25px rgba(0, 14, 91, 0.205);
+    padding: 10px;
+    background-color: #fff;
+    color: #486178;
+    max-width: 100%;
+  }
+
+  .plan strong {
+    font-weight: 600;
+    color: #000000;
+  }
+
+  .plan .inner {
+    align-items: center;
+    padding: 20px;
+    padding-top: 40px;
+    background-color: #ecf0ff;
+    border-radius: 12px;
+    position: relative;
+  }
+
+  .plan .title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #425675;
+  }
+
+  .plan .title + * {
+    margin-top: 0.75rem;
+  }
+
+  .plan .info + * {
+    margin-top: 1rem;
+  }
+
+  .plan .features {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+  .plan .features li {
+    padding: 0.3rem;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .plan .features li + * {
+    margin-top: 0.75rem;
+  }
+
+  .plan .features .icon {
+    margin-right: 10px;
+    background-color: #000000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+  }
+
+  .plan .features .icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .plan .features + * {
+    margin-top: 1.25rem;
+  }
+
+  .plan .action {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+
+  .plan .button {
+    background-color: #000000;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 1.125rem;
+    text-align: center;
+    border: 0;
+    outline: 0;
+    width: 100%;
+    padding: 0.625em 0.75em;
+    text-decoration: none;
+  }
+
+  .plan .button:hover,
+  .plan .button:focus {
+    background-color: rgb(255, 255, 255);
+    color: #000000;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleButtons = document.querySelectorAll("#toggle-description");
+    const descriptions = document.querySelectorAll(".description-container");
+
+    for (let i = 0; i < toggleButtons.length; i++) {
+      let isDescriptionVisible = false;
+
+      toggleButtons[i].addEventListener("click", function () {
+        isDescriptionVisible = !isDescriptionVisible;
+
+        if (isDescriptionVisible) {
+          (descriptions[i] as HTMLElement).style.display = "block"; // Afficher la description
+          toggleButtons[i].textContent = "Cacher la description";
+        } else {
+          (descriptions[i] as HTMLElement).style.display = "none"; // Cacher la description
+          toggleButtons[i].textContent = "Learn more";
+        }
+      });
+    }
+  });
+</script>

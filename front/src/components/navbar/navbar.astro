@@ -1,0 +1,139 @@
+---
+import Container from "@components/container.astro";
+import Link from "@components/ui/link.astro";
+import Dropdown from "./dropdown.astro";
+import { Astronav, MenuItems, MenuIcon } from "astro-navbar";
+
+const menuitems = [
+  {
+    title: "Accueil",
+    path: "/",
+
+  },
+  
+  {
+    title: "Jobs",
+    path: "/jobs",
+  },
+  {
+    title: "Contact",
+    path: "/contact",
+  }, 
+  {
+    title: "Admin Panel",
+    path: "/admin",
+  },
+  
+];
+---
+
+<Container>
+  <header class="flex flex-col lg:flex-row justify-between items-center my-5">
+    <Astronav>
+      <div class="flex w-full lg:w-auto items-center justify-between">
+        <a href="/" class="text-lg"
+          ><span class="font-bold text-slate-800">In</span><span
+            class="text-slate-500">Dev</span
+          >
+        </a>
+        <div class="block lg:hidden">
+          <MenuIcon class="w-4 h-4 text-gray-800" />
+        </div>
+      </div>
+      <MenuItems class="hidden w-full lg:w-auto mt-2 lg:flex lg:mt-0">
+        <ul class="flex flex-col lg:flex-row lg:gap-3">
+          {
+            menuitems.map((item, index) => (
+              <>
+                {item.children && (
+                  <Dropdown
+                    title={item.title}
+                    children={item.children}
+                    lastItem={index === menuitems.length - 1}
+                  />
+                )}
+
+                {!item.children && (
+                  <li>
+                    <a
+                      href={item.path}
+                      class="flex lg:px-3 py-2 items-center text-gray-600 hover:text-gray-900">
+                      <span> {item.title}</span>
+                      {item.badge && (
+                        <span class="ml-1 px-2 py-0.5 text-[10px] animate-pulse font-semibold uppercase text-white bg-indigo-200 rounded-full">
+                          New
+                        </span>
+                      )}
+                    </a>
+                  </li>
+                )}
+              </>
+            ))
+          }
+        </ul>
+      </MenuItems>
+      <div>
+      <a style="margin: 10px;" id="loginOrManageLink" href="./manage">Manage</a>
+      <Link id="logoutOrSignupLink" size="md">Déconnexion</Link>
+      </div>
+    </Astronav>
+  </header>
+  <script>
+// Fonction pour gérer la déconnexion
+function logout() {
+  // Supprimer le cookie "authKey" s'il existe
+  document.cookie = 'authKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  // Supprimer l'access token du localStorage
+  localStorage.removeItem('authKey');
+  // Recharger la page
+  location.reload();
+}
+
+// Fonction pour gérer l'affichage des boutons
+function buttondisplay() {
+  // Vérifier la présence de l'access token dans localStorage
+  const accessToken = localStorage.getItem('authKey');
+  
+  // Sélectionner les éléments des liens "Manage" et "Déconnexion"
+  const loginOrManageLink = document.getElementById('loginOrManageLink');
+  const logoutOrSignupLink = document.getElementById('logoutOrSignupLink');
+
+  // Vérifier si un cookie "authKey" existe
+  const cookies = document.cookie.split(';');
+  let authKeyCookieFound = false;
+  for (const cookie of cookies) {
+    const parts = cookie.trim().split('=');
+    if (parts[0] === 'authKey') {
+      authKeyCookieFound = true;
+      break;
+    }
+  }
+
+  // Gérer le texte et l'action des liens en fonction de la présence du cookie et de l'access token
+  if (authKeyCookieFound || accessToken) {
+    // Si un cookie "authKey" ou un access token est présent, changer le lien "Manage" en "Déconnexion" avec l'URL appropriée // Mettez l'URL de déconnexion ici
+    logoutOrSignupLink.textContent = "Déconnexion";
+    logoutOrSignupLink.addEventListener('click', logout); // Ajouter la fonction de déconnexion
+    logoutOrSignupLink.style.cursor = "pointer";
+
+    
+    // Changer le lien "Déconnexion" en "Manage" avec l'URL appropriée
+    loginOrManageLink.href = "./manage"; // Mettez l'URL de gestion ici
+    loginOrManageLink.textContent = "Manage";
+  } else {
+    // Si ni le cookie ni l'access token ne sont présents, remettre le lien "Manage" avec l'URL de gestion appropriée
+    loginOrManageLink.href = "./login"; // Mettez l'URL de gestion ici
+    loginOrManageLink.textContent = "Log in";
+    
+    // Changer le lien "Déconnexion" en "Log in" avec l'URL d'authentification appropriée
+    logoutOrSignupLink.href = "./signup"; // Mettez l'URL de connexion ici
+    logoutOrSignupLink.textContent = "Sign Up";
+    logoutOrSignupLink.style.cursor = "pointer";
+
+  }
+}
+
+// Exécuter la fonction lors du chargement de la page
+window.addEventListener('DOMContentLoaded', buttondisplay);
+  </script>
+</Container>

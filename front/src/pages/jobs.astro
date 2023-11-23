@@ -1,0 +1,53 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import Cardjob from "@components/cardjob.astro";
+import { CardData, fetchJobs } from "./getadvert";
+let cardData= [];
+try{
+cardData = await fetchJobs();
+}
+catch(error){
+  console.log("An error has occured: " + error)
+}
+---
+
+<Layout title="Jobs">
+  <Container>
+    <Sectionhead transition:animate="slide">
+      <Fragment slot="title">Jobs for you</Fragment>
+      <Fragment slot="desc">
+        Find the job of your dreams and made for you here.
+      </Fragment>
+    </Sectionhead>
+
+    <main class="mt-16">
+      <div class="grid gap-2">
+        <div class="link-card cards-container" id="cards-container">
+          {
+            cardData.length !== 0 ? (
+              cardData.map((element) => (
+                <Cardjob
+                  title={element.title}
+                  body={element.description}
+                  entreprise={element.company.name ? element.company.name : ""}
+                  salaire={element.pay}
+                  emplacement={element.localisation}
+                  num={element.num}
+                  descPost={element.poste}
+                  mail={element.company.email}
+                  id={element.id}
+                  IdList={element.IdList}
+                  transition:animate="slide"
+                />
+              ))
+            ) : (
+              <p>No job found</p>
+            )
+          }
+        </div>
+      </div>
+    </main>
+  </Container>
+</Layout>

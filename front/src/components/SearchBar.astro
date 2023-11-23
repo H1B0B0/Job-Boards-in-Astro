@@ -1,0 +1,72 @@
+---
+
+---
+
+<template>
+  <div class="search-bar">
+    <input
+      type="text"
+      v-model="searchText"
+      placeholder="Rechercher par localisation ou intitulé du poste"
+      class="search-input"
+    />
+    <select v-model="selectedCategory" class="category-select">
+      <option value="localisation">Localisation</option>
+      <option value="intitule">Intitulé du poste</option>
+    </select>
+    <button @click="search" class="search-button">Rechercher</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      searchText: "",
+      selectedCategory: "localisation"
+    };
+  },
+  methods: {
+    search() {
+ 
+      console.log("Recherche par", this.selectedCategory, ":", this.searchText);
+
+    }
+  }
+};
+</script>
+
+<style scoped>
+.search-bar {
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px 0 0 5px;
+}
+
+.category-select {
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 0 5px 5px 0;
+}
+
+.search-button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+</style>

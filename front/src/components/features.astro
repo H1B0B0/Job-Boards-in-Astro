@@ -1,0 +1,68 @@
+---
+
+import { Icon } from "astro-icon";
+
+const features = [
+  {
+    title: "Work",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam aspernatur perferendis eum tenetur quo velit",
+    icon: "bx:bxs-briefcase",
+  },
+  {
+    title: "100% Free",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam aspernatur perferendis eum tenetur quo velit",
+    icon: "bx:bxs-window-alt",
+  },
+  {
+    title: "Offers that hide nothing",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam aspernatur perferendis eum tenetur quo velit",
+    icon: "bx:bxs-data",
+  },
+  {
+    title: "Transparent companies.",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam aspernatur perferendis eum tenetur quo velit",
+    icon: "bx:bxs-bot",
+  },
+  {
+    title: "Get ready to your job",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam aspernatur perferendis eum tenetur quo velit",
+    icon: "bx:bxs-file-find",
+  },
+  {
+    title: "Community",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam aspernatur perferendis eum tenetur quo velit",
+    icon: "bx:bxs-user",
+  },
+];
+---
+
+<div class="mt-16 md:mt-0">
+  <h2 class="text-4xl lg:text-5xl font-bold lg:tracking-tight">
+    All the offers you need can be found on our website 
+  </h2>
+  <p class="text-lg mt-4 text-slate-600">
+    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam aspernatur perferendis eum tenetur quo velit tempora, laborum officiis. Veritatis eos minima similique reprehenderit nisi dolores eligendi blanditiis odio inventore delectus.
+  </p>
+</div>
+
+<div class="grid sm:grid-cols-2 md:grid-cols-3 mt-16 gap-16">
+  {
+    features.map((item) => (
+      <div class="flex gap-4 items-start">
+        <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0">
+          <Icon class="text-white" name={item.icon} />
+        </div>
+        <div>
+          <h3 class="font-semibold text-lg">{item.title}</h3>{" "}
+          <p class="text-slate-500 mt-2 leading-relaxed">{item.description}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>

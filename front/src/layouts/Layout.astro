@@ -1,0 +1,39 @@
+---
+import { SEO } from "astro-seo";
+import Footer from "@components/footer.astro";
+import Navbar from "@components/navbar/navbar.astro";
+import "@fontsource-variable/inter/index.css";
+import SearchBar from "@components/SearchBar.astro";
+export interface Props {
+  title: string;
+}
+import { ViewTransitions } from "astro:transitions";
+
+const { title } = Astro.props;
+
+const makeTitle = title
+  ? title + " | " + "InDev"
+  : "InDev - Starter Template for Astro with Tailwind CSS";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href=""
+
+    <SEO>
+  </head>
+  <body>
+    <Navbar/>
+    <slot />
+    <Footer />
+    <style is:global>
+      img {
+        content-visibility: auto;
+      }
+    </style>
+  </body>
+  <ViewTransitions/>
+</html>

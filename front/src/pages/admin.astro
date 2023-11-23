@@ -1,0 +1,949 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { fetchJobs } from "./getadvert";
+import { fetchCompanies } from "./getcompanies";
+import { fetchUser } from "./getuser";
+
+let Advert = [];
+let Companies = [];
+let User = [];
+try {
+  Advert = await fetchJobs();
+} catch (error) {
+  console.error("Une erreur s'est produite lors du chargement des annonces:", error);
+}
+
+try {
+  Companies = await fetchCompanies();
+} catch (error) {
+  console.error("Une erreur s'est produite lors du chargement des entreprises:", error);
+}
+
+try {
+  User = await fetchUser();
+} catch (error) {
+  console.error("Une erreur s'est produite lors du chargement des utilisateurs:", error);
+}
+---
+
+<Layout title="Pricing">
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCps-r0lYzi602FJrqNfT_hpKoN1Ntdk9o&libraries=places"
+  ></script>  
+  <div class={`blur ${Advert.length === 0 && Companies.length === 0 && User.length === 0 ? 'active' : ''}`} id="general-div">
+    <section class="contener">
+      <div>
+        <div class="wrapper">
+          <h1 class="title">Companies</h1>
+          <button
+            class="create"
+            onclick="CreateComponent(event)"
+            data-element-type="company">
+            Create
+          </button>
+          {
+            Companies.length !== 0 ? (
+              Companies.map((element, index) => (
+                <div class="component" id={`company-${index}`}>
+                  <h1 class="title_card">{element.name}</h1>
+                  <h2 class="little_title_card">{element.localisation}</h2>
+                  <button
+                    class="read-more"
+                    onclick="expandComponent(event)"
+                    data-index={index}
+                    data-element-type="company">
+                    Read More
+                  </button>
+                  <div class="values-display" id="values-display">
+                  </div>
+                  <div class="button-container">
+                    <button
+                      id={element.id}
+                      class="delete"
+                      onclick="deleteComponent(event)"
+                      data-index={index}
+                      data-element-type="company">
+                      Delete
+                    </button>
+                    <button
+                      id={element.id}
+                      class="edit"
+                      onclick="editComponent(event)"
+                      data-index={index}
+                      data-element-type="company">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No companies found</p>
+            )
+          }
+        </div>
+      </div>
+      <div>
+        <div class="wrapper">
+          <h1 class="title">Advertissments</h1>
+          <button
+            class="create"
+            onclick="CreateComponent(event)"
+            data-element-type="advertissements">
+            Create
+          </button>
+          {
+            Advert.length !== 0 ? (
+              Advert.map((element, index) => (
+                <div class="component" id={`advertissements-${index}`}>
+                  <h1 class="title_card">{element.title}</h1>
+                  <h2 class="little_title_card">{element.company && element.company.name ? element.company.name : ""}</h2>
+                  <button
+                    class="read-more"
+                    onclick="expandComponent(event)"
+                    data-index={index}
+                    data-element-type="advertissements">
+                    Read More
+                  </button>
+                  <div class="values-display" id="values-display">
+                  </div>
+                  <div class="button-container">
+                    <button
+                      id={element.id}
+                      class="delete"
+                      onclick="deleteComponent(event)"
+                      data-index={index}
+                      data-element-type="advertissements">
+                      Delete
+                    </button>
+                    <button
+                      id={element.id}
+                      class="edit"
+                      onclick="editComponent(event)"
+                      data-index={index}
+                      data-element-type="advertissements">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No advertissments found</p>
+            )
+          }
+        </div>
+      </div>
+      <div>
+        <div class="wrapper">
+          <h1 class="title">Users</h1>
+          <button
+            class="create"
+            onclick="CreateComponent(event)"
+            data-element-type="user">
+            Create
+          </button>
+          {
+            User.length !== 0 ? (
+              User.map((element, index) => (
+                <div class="component" id={`user-${index}`}>
+                  <h1 class="title_card">{element.login}</h1>
+                  <h2 class="little_title_card">
+                    {element.lastname} {element.name}
+                  </h2>
+                  <button
+                    class="read-more"
+                    onclick="expandComponent(event)"
+                    data-index={index}
+                    data-element-type="user">
+                    Read More
+                  </button>
+                  <div class="values-display" id="values-display">
+                  </div>
+                  <div class="button-container">
+                    <button
+                      id={element.id}
+                      class="delete"
+                      onclick="deleteComponent(event)"
+                      data-index={index}
+                      data-element-type="user">
+                      Delete
+                    </button>
+                    <button
+                      id={element.id}
+                      class="edit"
+                      onclick="editComponent(event)"
+                      data-index={index}
+                      data-element-type="user">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No Users found</p>
+            )
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+<style>
+  @import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+
+  .blur {
+    filter: blur(30%);
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .blur.active {
+  filter: none; /* Supprime le flou lorsque la classe active est présente */
+}
+
+
+  .input_description {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    font-size: 17px;
+    border: 1px solid lightgrey;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    resize: none;
+  }
+
+  .title_card {
+    font-size: 25px;
+    text-align: center;
+    color: #000000;
+    user-select: none;
+    margin: 5px;
+    width: 100%;
+  }
+
+  .little_title_card {
+    font-size: 15px;
+    text-align: center;
+    color: #000000;
+    user-select: none;
+    margin: 5px;
+    width: 100%;
+  }
+  .contener {
+    display: flex;
+    flex-direction: row; /* Afficher les conteneurs en ligne */
+    align-items: flex-start; /* Aligner les éléments à l'intérieur en haut */
+    justify-content: center; /* Espace entre les conteneurs */
+    margin: 10px;
+  }
+
+  .button-container {
+    display: flex;
+  }
+
+  .button {
+    background: linear-gradient(-135deg, #000000, #474747);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+    height: 50px;
+    margin: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .button.active {
+    transform: scale(0.95);
+    background: white;
+    border: 2px solid #262626;
+    color: #262626;
+  }
+
+  .button-container {
+    display: flex;
+    align-items: center; /* Alignement vertical au centre des boutons */
+    gap: 10px; /* Espace entre les boutons */
+  }
+
+  ::selection {
+    background: #000000;
+    color: #fff;
+  }
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 25px 30px rgba(0, 0, 0, 0.1);
+    border-color: #000000;
+    border-width: 2px;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 25px;
+    padding: 10px;
+  }
+  .wrapper .component {
+    width: 380px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    padding: 5px;
+    width: 100%;
+    border-color: #000000;
+    border-width: 1px;
+  }
+  .wrapper .title {
+    font-size: 35px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    user-select: none;
+    border-radius: 15px;
+    margin: 5px;
+    padding: 5px;
+    width: 100%;
+    background: linear-gradient(-135deg, #000000, #474747);
+  }
+  .wrapper form {
+    padding: 10px 30px 50px 30px;
+  }
+  .wrapper form .field {
+    height: 50px;
+    width: 100%;
+    margin-top: 20px;
+    position: relative;
+  }
+
+  .wrapper form .field input {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    font-size: 17px;
+    border: 1px solid lightgrey;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  .wrapper form .field input:focus,
+  form .field input:valid {
+    border-color: #000000;
+  }
+  .wrapper form .field label {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    color: #999999;
+    font-weight: 400;
+    font-size: 17px;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+  }
+
+  .component .delete,
+  .component .edit,
+  .component .name {
+    display: none; /* Masquez les boutons "Delete" et "Edit" par défaut */
+  }
+
+  .component.expanded .delete,
+  .component.expanded .edit {
+    display: block; /* Affichez les boutons "Delete" et "Edit" lorsque le composant est étendu */
+  }
+
+  .component.expanded .read-more {
+    display: none; /* Masquez le bouton "Read More" lorsque le composant est étendu */
+  }
+
+  .component .read-more {
+    background: linear-gradient(-135deg, #000000, #474747);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .component .delete {
+    background: linear-gradient(-135deg, #670000, #bb0404);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 15px;
+    height: 50px;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .wrapper .create {
+    background: linear-gradient(-135deg, #240067, #463d6b);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 15px;
+    height: 50px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .component .edit {
+    background: linear-gradient(-135deg, #026700, #16bb04);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 15px;
+    height: 50px;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    transition: all 0.3s ease;
+  }
+  form .field input:focus ~ label,
+  form .field input:valid ~ label {
+    top: 0%;
+    font-size: 16px;
+    color: #000000;
+    background: #fff;
+    transform: translateY(-50%);
+  }
+  form .field textarea:focus ~ label,
+  form .field textarea:valid ~ label {
+    top: 0%;
+    font-size: 16px;
+    color: #000000;
+    background: #fff;
+    transform: translateY(-80%);
+  }
+  form .content {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    font-size: 16px;
+    align-items: center;
+    justify-content: space-around;
+  }
+  form .content .checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  form .content input {
+    width: 15px;
+    height: 15px;
+    background: red;
+  }
+  form .content label {
+    color: #262626;
+    user-select: none;
+    padding-left: 5px;
+  }
+  form .content .pass-link {
+    color: "";
+  }
+  form .field input[type="submit"] {
+    color: #fff;
+    border: none;
+    padding-left: 0;
+    margin-top: -10px;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    background: linear-gradient(-135deg, #000000, #474747);
+    transition: all 0.3s ease;
+  }
+  form .field input[type="submit"]:active {
+    transform: scale(0.95);
+  }
+  form .signup-link {
+    color: #262626;
+    margin-top: 20px;
+    text-align: center;
+  }
+  form .pass-link a,
+  form .signup-link a {
+    color: #4158d0;
+    text-decoration: none;
+  }
+  form .pass-link a:hover,
+  form .signup-link a:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 825px) {
+    .contener {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+<script>
+  import anime from "animejs/lib/anime.es.js";
+  const accessToken = localStorage.getItem("authKey");
+  let payloadObj = null;
+
+  function parseToken(token) {
+    const parts = token.split(".");
+    return JSON.parse(atob(parts[1]));
+  }
+
+  if (accessToken) {
+    payloadObj = parseToken(accessToken);
+    console.log(payloadObj);
+  } else {
+    const cookies = document.cookie.split(";");
+    for (const cookie of cookies) {
+      const [cookieName, cookieValue] = cookie.trim().split("=");
+      if (cookieName === "authKey") {
+        payloadObj = parseToken(cookieValue);
+        console.log(payloadObj);
+        break;
+      }
+    }
+  }
+
+  const layoutContainer = document.getElementById("general-div");
+
+  if (payloadObj && payloadObj.userRole === "admin") {
+    layoutContainer.classList.remove("blur");
+  } else {
+    window.alert("You are not an admin! Get out of here, brigand!");
+    window.location.href = "./";
+  }
+
+  function expandComponent(event) {
+  const target = event.target;
+  const index = parseInt(target.getAttribute("data-index"));
+  const elementType = target.getAttribute("data-element-type");
+
+  // Utilisez le type d'élément pour créer l'ID de l'élément
+  const component = document.getElementById(`${elementType}-${index}`);
+
+  if (component) {
+    component.classList.add("expanded");
+
+    const deleteButton = component.querySelector(".delete");
+    const editButton = component.querySelector(".edit");
+
+    if (deleteButton && editButton) {
+      deleteButton.style.display = "block";
+      editButton.style.display = "block";
+    }
+
+    const readMoreButton = component.querySelector(".read-more");
+    if (readMoreButton) {
+      readMoreButton.style.display = "none";
+    }
+
+    // Récupérez les données de l'élément
+    const valuesDisplay = component.querySelector(".values-display");
+    valuesDisplay.innerHTML = "";
+
+    fetch(`http://localhost:3000/${elementType}/${target.id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error("Réponse de l'API différente de 200");
+        }
+      })
+      .then((data) => {
+
+        // Create a div to display values
+        const values = document.createElement("div");
+
+        // Check the element type and exclude specific properties
+        for (const key in data[index]) {
+          if (
+              key !== "password" &&
+              (elementType !== "company" ||
+                (key !== "localisation" && key !== "name")) &&
+              (elementType !== "advertissements" ||
+                (key !== "name"))
+            ) {
+            const label = document.createElement("label");
+            label.textContent = key;
+            label.style.margin = "5px";
+            label.style.fontWeight = "400";
+            label.style.fontSize = "20px";
+
+            const p = document.createElement("p");
+            if (key=="company"&& elementType == "advertissements"){
+              p.textContent = data[index][key].name || "No data";
+            }
+            else{
+              p.textContent = data[index][key] || "No data";
+            }
+            p.style.height = "100%";
+            p.style.width = "100%";
+            p.style.fontSize = "15px";
+            p.style.border = "1px solid lightgrey";
+            p.style.borderRadius = "3px";
+            p.style.padding = "10px";
+
+            p.setAttribute("autocomplete", key);
+
+            label.appendChild(p);
+            values.appendChild(label);
+          }
+        }
+
+        valuesDisplay.appendChild(values);
+      });
+  }
+}
+
+  function deleteComponent(event) {
+    const target = event.target;
+    const elementType = target.getAttribute("data-element-type");
+    fetch("http://localhost:3000/" + elementType + "/" + target.id, {
+      method: "Delete",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          anime({
+            targets: ".delete",
+            translateX: ["-12rem", "0rem"],
+            duration: 100,
+            loop: 5,
+            easing: "easeOutBack",
+          });
+          throw new Error("Réponse de l'API différente de 200");
+        }
+      })
+      .then((data) => {
+        location.reload();
+      })
+      .catch((error) => {
+        console.error("Une erreur s'est produite :", error);
+        anime({
+          targets: ".delete",
+          translateX: ["-12rem", "0rem"],
+          duration: 100,
+          loop: 5,
+          easing: "easeOutBack",
+        });
+      });
+  }
+
+  function editComponent(event) {
+    const target = event.target;
+    const elementType = target.getAttribute("data-element-type");
+    let passwordValue = "";
+
+    fetch(`http://localhost:3000/${elementType}/${target.id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error("Réponse de l'API différente de 200");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+        // Créez une boîte de dialogue modale (modal) pour le formulaire
+        const modal = document.createElement("div");
+        modal.style.position = "fixed"; // Position fixe pour le centrage
+        modal.style.top = "50%"; // Position verticale au milieu
+        modal.style.left = "50%"; // Position horizontale au milieu
+        modal.style.transform = "translate(-50%, -50%)"; // Centrage
+        modal.style.backgroundColor = "white";
+        modal.style.boxShadow = "30px 30px 30px rgba(0, 0, 0, 0.1)";
+        modal.style.borderColor = "#000000";
+        modal.style.borderWidth = "2px";
+        modal.style.borderRadius = "15px";
+        modal.classList.add("modal");
+
+        // Créez un formulaire
+        const form = document.createElement("form");
+        form.classList.add("field");
+        form.style.display = "flex";
+        form.style.flexDirection = "column";
+        form.style.alignItems = "top";
+        form.style.margin = "10px";
+
+        // Parcourez les propriétés de l'objet "data" pour générer des champs de formulaire
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            if (key !== "id" && key !== "advertissements" && key !== "idList") {
+              // Créez un label pour chaque champ de formulaire
+              const label = document.createElement("label");
+              label.textContent = key;
+              label.style.margin = "5px";
+              label.style.fontWeight = "400";
+              label.style.fontSize = "17px";
+
+              const input = document.createElement("input");
+              input.name = key;
+              // Assurez-vous que la valeur de "password" est vide
+              input.value = key === "password" ? "" : data[key];
+              passwordValue = key === "password" ? data[key] : "";
+              input.style.height = "100%";
+              input.style.width = "100%";
+              input.style.outline = "none";
+              input.style.fontSize = "15px";
+              input.style.border = "1px solid lightgrey";
+              input.style.borderRadius = "25px";
+              input.style.padding = "10px";
+
+              input.setAttribute("autocomplete", key);
+
+              // Ajoutez le label et l'input au formulaire
+              label.appendChild(input);
+              form.appendChild(label);
+            }
+          }
+        }
+
+        // Créez un bouton "OK" pour soumettre le formulaire
+        const okButton = document.createElement("button");
+        okButton.textContent = "OK";
+
+        // Gérez la soumission du formulaire
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          console.log("here");
+
+          // Récupérez les données du formulaire
+          const formData = new FormData(form);
+          const updatedData = {};
+
+          formData.forEach((value, key) => {
+            if (updatedData[key] == "password" && value == "") {
+              updatedData[key] = passwordValue;
+            } else {
+              updatedData[key] = value;
+            }
+          });
+
+          // Effectuez une requête PUT pour mettre à jour les informations
+          fetch(`http://localhost:3000/${elementType}/${target.id}`, {
+            method: "PUT",
+            body: JSON.stringify(updatedData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (response.status === 200) {
+                // Fermez la boîte de dialogue modale
+                modal.remove();
+                // Rechargez la page ou mettez à jour les données de la liste si nécessaire
+                location.reload();
+              } else {
+                throw new Error("Échec de la mise à jour");
+              }
+            })
+            .catch((error) => {
+              console.error("Erreur lors de la mise à jour :", error);
+            });
+        });
+
+        form.appendChild(okButton);
+        modal.appendChild(form);
+
+        // Ajoutez la boîte de dialogue modale au DOM
+        document.body.appendChild(modal);
+      })
+      .catch((error) => {
+        console.error("Une erreur s'est produite :", error);
+      });
+  }
+
+  function CreateComponent(event) {
+  const target = event.target;
+  const elementType = target.getAttribute("data-element-type");
+
+  // Créez une boîte de dialogue modale pour le formulaire de création
+  const modal = document.createElement("div");
+  modal.style.position = "fixed";
+  modal.style.top = "50%";
+  modal.style.left = "50%";
+  modal.style.transform = "translate(-50%, -50%)";
+  modal.style.backgroundColor = "white";
+  modal.style.boxShadow = "30px 30px 30px rgba(0, 0, 0, 0.1)";
+  modal.style.borderColor = "#000000";
+  modal.style.borderWidth = "2px";
+  modal.style.borderRadius = "15px";
+  modal.classList.add("modal");
+
+  // Créez un formulaire pour la création
+  const form = document.createElement("form");
+  form.classList.add("field");
+  form.style.display = "flex";
+  form.style.flexDirection = "column";
+  form.style.alignItems = "top";
+  form.style.margin = "10px";
+
+  // Créez des champs de formulaire pour les données spécifiques à chaque type
+  if (elementType === "company") {
+    createCompanyFields(form);
+  } else if (elementType === "user") {
+    createUserFields(form);
+  } else {
+    createAdvertFields(form);
+  }
+
+  // Créez un bouton "OK" pour soumettre le formulaire
+  const okButton = document.createElement("button");
+  okButton.textContent = "OK";
+
+  // Gérez la soumission du formulaire
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Récupérez les données du formulaire
+    const formData = new FormData(form);
+    const formDataObject = {};
+
+    formData.forEach((value, key) => {
+      formDataObject[key] = value;
+    });
+    // Effectuez une requête POST pour créer l'élément
+    fetch(`http://localhost:3000/${elementType}`, {
+      method: "POST",
+      body: JSON.stringify(formDataObject),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 201) {
+          modal.remove();
+          location.reload();
+        } else {
+          throw new Error("Échec de la création");
+        }
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la création :", error);
+      });
+  });
+
+  form.appendChild(okButton);
+  modal.appendChild(form);
+
+  // Ajoutez la boîte de dialogue modale au DOM
+  document.body.appendChild(modal);
+}
+
+function createCompanyFields(form) {
+
+  const nameField = createInputField("name", "Nom de l'entreprise", "text");
+  const localisationField = createInputField("localisation", "Localisation de l'entreprise", "text");
+  const emailField = createInputField("email", "Adresse email", "email");
+  const loginField = createInputField("login", "Nom d'utilisateur", "text");
+  const passwordField = createInputField("password", "Mot de passe", "password");
+
+  form.appendChild(nameField);
+  form.appendChild(localisationField);
+  form.appendChild(emailField);
+  form.appendChild(loginField);
+  form.appendChild(passwordField);
+}
+
+function createUserFields(form) {
+  const lastNameField = createInputField("lastname", "Nom de famille", "text");
+  const nameField = createInputField("name", "Prénom", "text");
+  const emailField = createInputField("email", "Adresse email", "email");
+  const loginField = createInputField("login", "Nom d'utilisateur", "text");
+  const passwordField = createInputField("password", "Mot de passe", "password");
+
+  form.appendChild(lastNameField);
+  form.appendChild(nameField);
+  form.appendChild(emailField);
+  form.appendChild(loginField);
+  form.appendChild(passwordField);
+}
+
+function createAdvertFields(form) {
+  const titleField = createInputField("title", "Titre de l'annonce", "text");
+  const descriptionField = createInputField("description", "Description", "text");
+  const numField = createInputField("num", "Numéro de téléphone", "text");
+  const localisationField = createInputField("localisation", "Localisation", "text");
+  const posteField = createInputField("poste", "Poste", "text");
+  const typeContratField = createInputField("typeContrat", "Type de contrat", "text");
+  const horairesField = createInputField("horraires", "Horaires de travail", "text");
+  const payField = createInputField("pay", "Salaire", "text");
+  const idcompany = createInputField("company", "IdCompany", "Number");
+  console.log("here")
+  form.appendChild(titleField);
+  form.appendChild(descriptionField);
+  form.appendChild(numField);
+  form.appendChild(localisationField);
+  form.appendChild(posteField);
+  form.appendChild(typeContratField);
+  form.appendChild(horairesField);
+  form.appendChild(payField);
+  form.appendChild(idcompany);
+}
+
+function createInputField(name, label, type) {
+  const field = document.createElement("div");
+  field.classList.add("field");
+
+  const labelElement = document.createElement("label");
+  labelElement.textContent = label;
+  labelElement.style.margin = "5px";
+  labelElement.style.fontWeight = "400";
+  labelElement.style.fontSize = "20px";
+  field.appendChild(labelElement);
+
+  const inputElement = document.createElement("input");
+  inputElement.style.height = "100%";
+  inputElement.style.width = "100%";
+  inputElement.style.outline = "none";
+  inputElement.style.fontSize = "15px";
+  inputElement.style.border = "1px solid lightgrey";
+  inputElement.style.borderRadius = "25px";
+  inputElement.style.padding = "10px";
+  inputElement.name = name;
+  inputElement.type = type;
+  inputElement.required = true;
+  field.appendChild(inputElement);
+
+  return field;
+}
+
+  window.expandComponent = expandComponent;
+  window.deleteComponent = deleteComponent;
+  window.editComponent = editComponent;
+  window.CreateComponent = CreateComponent;
+</script>
