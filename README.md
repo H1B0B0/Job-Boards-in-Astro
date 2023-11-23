@@ -23,3 +23,4 @@ This project was carried out as part of my pre-MSC bootcamp at Epitech. We had t
 ## Front Readme
 
 [Front Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/front#readme)
+
