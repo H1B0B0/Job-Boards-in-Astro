@@ -16,33 +16,10 @@ This project was carried out as part of my pre-MSC bootcamp at Epitech. We had t
 
 ![NestJS Logo](https://upload.wikimedia.org/wikipedia/commons/a/a8/NestJS.svg)
 
-# API CRUD
+## Back Readme
 
-```mermaid
-graph TD
+[Back Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/back#readme)
 
-subgraph Database
-  db(Database)
-end
+## Front Readme
 
-subgraph API
-  api(API)
-end
-
-subgraph Front-end
-  fe(Front-end)
-end
-
-
-Front-end -->|GET| API
-Database -->|GET| API
-API -->|GET| Database
-API -->|GET| Front-end
-Front-end -->|POST| API
-API -->|POST| Database
-Front-end -->|DELETE| API
-API -->|DELETE| Database
-Front-end -->|PUT| API
-API -->|PUT| Database
-
-```
+[Front Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/front#readme)
