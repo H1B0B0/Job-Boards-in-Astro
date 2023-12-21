@@ -17,7 +17,7 @@ The `.` will clone it to the current directory so make sure you are inside your 
 ### 2. Install Dependencies
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 # or
 yarn install
 # or (recommended)

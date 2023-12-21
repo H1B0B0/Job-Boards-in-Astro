@@ -1,11 +1,9 @@
 ---
 import Layout from "@layouts/Layout.astro";
+const googleMapsApiKey = import.meta.env.GOOGLE_MAPS_API_KEY;
 ---
 
-<Layout title="manage">
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCps-r0lYzi602FJrqNfT_hpKoN1Ntdk9o&libraries=places"
-  ></script>
+<Layout title="manage" googleMapsApiKey={googleMapsApiKey}>
   <section class="contener">
     <div class="wrapper">
       <div class="title">Manage your account</div>
@@ -36,9 +34,9 @@ import Layout from "@layouts/Layout.astro";
       </form>
     </div>
     <script>
-      import anime from "animejs/lib/anime.es.js";
+      import anime from "animejs";
 
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("astro:page-load", function () {
         const accessToken = localStorage.getItem("authKey");
         let payloadObj = null; // Initialize payloadObj as null
         if (accessToken) {
@@ -46,7 +44,6 @@ import Layout from "@layouts/Layout.astro";
           const parts = token.split(".");
           const decodedPayload = atob(parts[1]);
           payloadObj = JSON.parse(decodedPayload);
-          console.log(payloadObj);
         } else {
           const cookies = document.cookie.split(";");
           for (const cookie of cookies) {
@@ -56,7 +53,6 @@ import Layout from "@layouts/Layout.astro";
               const parts2 = token.split(".");
               const decodedPayload = atob(parts2[1]);
               payloadObj = JSON.parse(decodedPayload);
-              console.log(payloadObj);
               break;
             }
           }
@@ -64,31 +60,31 @@ import Layout from "@layouts/Layout.astro";
 
         if (payloadObj) {
           const emailInput = document.querySelector(
-            "input[name='Email']"
+            "input[name='Email']",
           ) as HTMLInputElement;
           const loginInput = document.querySelector(
-            "input[name='login']"
+            "input[name='login']",
           ) as HTMLInputElement;
           const passwordInput = document.querySelector(
-            "input[name='password']"
+            "input[name='password']",
           ) as HTMLInputElement;
           const passwordConfirmationInput = document.querySelector(
-            "input[name='password_confirmation']"
+            "input[name='password_confirmation']",
           ) as HTMLInputElement;
           const descriptionInput = document.querySelector(
-            "input[name='description']"
+            "input[name='description']",
           );
           const descriptionLabel = document.getElementById(
-            "description_label"
+            "description_label",
           ) as HTMLLabelElement;
           const submitbutton = document.getElementById(
-            "Submit"
+            "Submit",
           ) as HTMLInputElement;
 
           if (payloadObj.userType === "company") {
             descriptionLabel.textContent = "Change localisation";
             const autocomplete = new google.maps.places.Autocomplete(
-              descriptionInput
+              descriptionInput,
             );
             passwordInput.addEventListener("input", function () {
               if (passwordInput.value.trim() !== "") {
@@ -102,7 +98,7 @@ import Layout from "@layouts/Layout.astro";
               "place_changed",
               function () {
                 const place = autocomplete.getPlace();
-              }
+              },
             );
           }
 
@@ -138,16 +134,16 @@ import Layout from "@layouts/Layout.astro";
                 userData.password = passwordValue;
               }
 
-              if (payloadObj.userType === "user" && descriptionInput.value.trim() !== "") {
+              if (
+                payloadObj.userType === "user" &&
+                descriptionInput.value.trim() !== ""
+              ) {
                 const descriptionValue = descriptionInput.value;
-                console.log("description");
                 userData.description = descriptionValue;
-            } 
-            else if (descriptionInput.value.trim() !== "") {
+              } else if (descriptionInput.value.trim() !== "") {
                 const descriptionValue = descriptionInput.value;
-                console.log("localisation");
                 userData.company_location = descriptionValue;
-            }
+              }
               if (Object.keys(userData).length !== 0) {
                 fetch(
                   "http://localhost:3000/" +
@@ -160,7 +156,7 @@ import Layout from "@layouts/Layout.astro";
                     headers: {
                       "Content-Type": "application/json",
                     },
-                  }
+                  },
                 )
                   .then((response) => {
                     if (response.status === 200) {
@@ -178,7 +174,6 @@ import Layout from "@layouts/Layout.astro";
                   })
                   .then((data) => {
                     // Traiter la réponse de l'API ici
-                    console.log(data);
                     submitbutton.style.background =
                       "linear-gradient(-135deg, #007a00, #164e1e)";
                     submitbutton.style.transition = "background 0.7s ease";

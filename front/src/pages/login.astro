@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8" />
@@ -13,7 +13,7 @@
       <div class="button-container">
         <button class="button" id="companyBtn">Company</button>
         <button class="button" id="applicantBtn">Applicant</button>
-      </div>      
+      </div>
       <form id="loginForm">
         <div class="field">
           <input type="text" name="login" required />
@@ -42,277 +42,270 @@
     </div>
 
     <script>
-      import anime from "animejs/lib/anime.es.js";
+      import anime from "animejs";
       const companyBtn = document.getElementById("companyBtn");
       const applicantBtn = document.getElementById("applicantBtn");
       const loginForm = document.getElementById("loginForm");
-    
+
       companyBtn.addEventListener("click", () => {
         companyBtn.classList.add("active");
         applicantBtn.classList.remove("active");
       });
-    
+
       applicantBtn.addEventListener("click", () => {
         applicantBtn.classList.add("active");
         companyBtn.classList.remove("active");
       });
-    
-      loginForm.addEventListener("submit", function(e) {
+
+      loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
         const username = loginForm.login.value;
         const password = loginForm.password.value;
         const rememberMe = document.getElementById("remember-me").checked;
-        
+
         let authURL = "";
-    
+
         if (applicantBtn.classList.contains("active")) {
           authURL = "http://localhost:3000/auth/login/user";
         } else {
           authURL = "http://localhost:3000/auth/login/company";
         }
-    
+
         // Envoi du formulaire vers l'URL appropriée
         fetch(authURL, {
           method: "POST",
           body: JSON.stringify({ username, password }),
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         })
-        .then(response => {
-          if (response.status === 201) {
-            // Vous pouvez lire le corps de la réponse ici une seule fois
-            return response.json(); // Renvoie une promesse
-          } else {
-            anime({
-              targets: "#Submit",
-              translateX: ["-12rem", "0rem"],
-              duration: 100,
-              loop: 5,
-              easing: "easeOutBack",
-            });
-            throw new Error("L'authentification a échoué");
-          }
-        })
-        .then(data => {
-          if (data && data.access_token) {
-            if (rememberMe) {
-              localStorage.setItem('authKey', data.access_token);
+          .then((response) => {
+            if (response.status === 201) {
+              // Vous pouvez lire le corps de la réponse ici une seule fois
+              return response.json(); // Renvoie une promesse
+            } else {
+              anime({
+                targets: "#Submit",
+                translateX: ["-12rem", "0rem"],
+                duration: 100,
+                loop: 5,
+                easing: "easeOutBack",
+              });
+              throw new Error("L'authentification a échoué");
+            }
+          })
+          .then((data) => {
+            if (data && data.access_token) {
+              if (rememberMe) {
+                localStorage.setItem("authKey", data.access_token);
+                const payloadObj = parseToken(data.access_token);
+                if (payloadObj.userRole != "admin") {
+                  window.location.href = "./";
+                } else {
+                  window.location.href = "./admin";
+                }
+              } else {
+                document.cookie = `authKey=${data.access_token}; path=/; SameSite=Lax`;
+              }
               const payloadObj = parseToken(data.access_token);
-              if (payloadObj.userRole != "admin"){
-              window.location.href = "./";
-              }
-              else{
+              if (payloadObj.userRole != "admin") {
+                window.location.href = "./";
+              } else {
                 window.location.href = "./admin";
               }
             }
-            else{
-              document.cookie = `authKey=${data.access_token}; path=/; SameSite=Lax`;
-            }
-            const payloadObj = parseToken(data.access_token);
-              if (payloadObj.userRole != "admin"){
-              window.location.href = "./";
-              }
-              else{
-                window.location.href = "./admin";
-              }
-          }
-        })
-        .catch(error => {
-          // Gérez les erreurs ici
-          console.error(error);
-        });
-    });
+          })
+          .catch((error) => {
+            // Gérez les erreurs ici
+            console.error(error);
+          });
+      });
 
-    function parseToken(token) {
-      const parts = token.split(".");
-      return JSON.parse(atob(parts[1]));
-    }
-    document.addEventListener("DOMContentLoaded", function() {
-      // Vérifier si un utilisateur est déjà connecté
-      const accessToken = localStorage.getItem('authKey');
-      console.log(accessToken)
-      if (accessToken) {
-        // Rediriger l'utilisateur vers la page d'accueil ou une autre page de votre choix
-        window.location.href = "./";
+      function parseToken(token) {
+        const parts = token.split(".");
+        return JSON.parse(atob(parts[1]));
       }
-      const cookies = document.cookie.split(';');
-      for (const cookie of cookies) {
-        const parts = cookie.trim().split('=');
-        if (parts[0] === 'authKey') {
+      document.addEventListener("DOMContentLoaded", function () {
+        // Vérifier si un utilisateur est déjà connecté
+        const accessToken = localStorage.getItem("authKey");
+        if (accessToken) {
+          // Rediriger l'utilisateur vers la page d'accueil ou une autre page de votre choix
           window.location.href = "./";
         }
-      }
-
-    });
+        const cookies = document.cookie.split(";");
+        for (const cookie of cookies) {
+          const parts = cookie.trim().split("=");
+          if (parts[0] === "authKey") {
+            window.location.href = "./";
+          }
+        }
+      });
     </script>
-    
   </body>
 </html>
 
-  <style>
-    @import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-    .left {
-      position: absolute;
-      top: 0;
-      left: 0;
-      margin: 10px;
-    }
-    .button-container {
-      display: flex;
-    }
+<style>
+  @import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  .left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+  }
+  .button-container {
+    display: flex;
+  }
 
-    .button {
-      background: linear-gradient(-135deg, #000000, #474747);
-      color: #fff;
-      font-size: 20px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      border-radius: 25px;
-      height: 50px;
-      flex: 1; /* Utilisez flex pour les boutons */
-      margin: 10px;
-      transition: all 0.3s ease;
-    }
+  .button {
+    background: linear-gradient(-135deg, #000000, #474747);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+    height: 50px;
+    flex: 1; /* Utilisez flex pour les boutons */
+    margin: 10px;
+    transition: all 0.3s ease;
+  }
 
-    .button.active {
+  .button.active {
     transform: scale(0.95);
     background: white;
     border: 2px solid #262626;
     color: #262626;
   }
 
-    html,
-    body {
-      display: grid;
-      height: 100%;
-      width: 100%;
-      place-items: center;
-      background: #f2f2f2;
-      /* background: linear-gradient(-135deg, #000000, #474747); */
-    }
-    ::selection {
-      background: #393939;
-      color: #fff;
-    }
-    .wrapper {
-      width: 380px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
-    }
-    .wrapper .title {
-      font-size: 35px;
-      font-weight: 600;
-      text-align: center;
-      line-height: 100px;
-      color: #fff;
-      user-select: none;
-      border-radius: 15px 15px 0 0;
-      background: linear-gradient(-135deg, #000000, #474747);
-    }
-    .wrapper form {
-      padding: 10px 30px 50px 30px;
-    }
-    .wrapper form .field {
-      height: 50px;
-      width: 100%;
-      margin-top: 20px;
-      position: relative;
-    }
-    .wrapper form .field input {
-      height: 100%;
-      width: 100%;
-      outline: none;
-      font-size: 17px;
-      border: 1px solid lightgrey;
-      border-radius: 25px;
-      transition: all 0.3s ease;
-      text-align: center;
-    }
-    .wrapper form .field input:focus,
-    form .field input:valid {
-      border-color: #393939;
-    }
-    .wrapper form .field label {
-      position: absolute;
-      top: 50%;
-      left: 20px;
-      color: #999999;
-      font-weight: 400;
-      font-size: 17px;
-      pointer-events: none;
-      transform: translateY(-50%);
-      transition: all 0.3s ease;
-    }
-    form .field input:focus ~ label,
-    form .field input:valid ~ label {
-      top: 0%;
-      font-size: 16px;
-      color: #393939;
-      background: #fff;
-      transform: translateY(-50%);
-    }
-    form .content {
-      display: flex;
-      width: 100%;
-      height: 50px;
-      font-size: 16px;
-      align-items: center;
-      justify-content: space-around;
-    }
-    form .content .checkbox {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    form .content input {
-      width: 15px;
-      height: 15px;
-      background: red;
-    }
-    form .content label {
-      color: #262626;
-      user-select: none;
-      padding-left: 5px;
-    }
-    form .content .pass-link {
-      color: "";
-    }
-    form .field input[type="submit"] {
-      color: #fff;
-      border: none;
-      padding-left: 0;
-      margin-top: -10px;
-      font-size: 20px;
-      font-weight: 500;
-      cursor: pointer;
-      background: linear-gradient(-135deg, #000000, #474747);
-      transition: all 0.3s ease;
-    }
-    form .field input[type="submit"]:active {
-      transform: scale(0.95);
-    }
-    form .signup-link {
-      color: #262626;
-      margin-top: 20px;
-      text-align: center;
-    }
-    form .pass-link a,
-    form .signup-link a {
-      color: rgb(11, 11, 145);
-      text-decoration: none;
-    }
-    form .pass-link a:hover,
-    form .signup-link a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</html>
+  html,
+  body {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    place-items: center;
+    background: #f2f2f2;
+    /* background: linear-gradient(-135deg, #000000, #474747); */
+  }
+  ::selection {
+    background: #393939;
+    color: #fff;
+  }
+  .wrapper {
+    width: 380px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+  }
+  .wrapper .title {
+    font-size: 35px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 100px;
+    color: #fff;
+    user-select: none;
+    border-radius: 15px 15px 0 0;
+    background: linear-gradient(-135deg, #000000, #474747);
+  }
+  .wrapper form {
+    padding: 10px 30px 50px 30px;
+  }
+  .wrapper form .field {
+    height: 50px;
+    width: 100%;
+    margin-top: 20px;
+    position: relative;
+  }
+  .wrapper form .field input {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    font-size: 17px;
+    border: 1px solid lightgrey;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  .wrapper form .field input:focus,
+  form .field input:valid {
+    border-color: #393939;
+  }
+  .wrapper form .field label {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    color: #999999;
+    font-weight: 400;
+    font-size: 17px;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+  }
+  form .field input:focus ~ label,
+  form .field input:valid ~ label {
+    top: 0%;
+    font-size: 16px;
+    color: #393939;
+    background: #fff;
+    transform: translateY(-50%);
+  }
+  form .content {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    font-size: 16px;
+    align-items: center;
+    justify-content: space-around;
+  }
+  form .content .checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  form .content input {
+    width: 15px;
+    height: 15px;
+    background: red;
+  }
+  form .content label {
+    color: #262626;
+    user-select: none;
+    padding-left: 5px;
+  }
+  form .content .pass-link {
+    color: "";
+  }
+  form .field input[type="submit"] {
+    color: #fff;
+    border: none;
+    padding-left: 0;
+    margin-top: -10px;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    background: linear-gradient(-135deg, #000000, #474747);
+    transition: all 0.3s ease;
+  }
+  form .field input[type="submit"]:active {
+    transform: scale(0.95);
+  }
+  form .signup-link {
+    color: #262626;
+    margin-top: 20px;
+    text-align: center;
+  }
+  form .pass-link a,
+  form .signup-link a {
+    color: rgb(11, 11, 145);
+    text-decoration: none;
+  }
+  form .pass-link a:hover,
+  form .signup-link a:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
@@ -124,337 +124,344 @@
         <div id="errorContainer" style="color: red;"></div>
         <div id="register" class="button-container">
           <button class="button" id="registerButton" value="Register"
-            >Register</button>
-            <p>
-              Have already an account? <a href="./login" class="blue"
-                >Sign in</a>
-            </p>
-            </div>
+            >Register</button
+          >
+          <p>
+            Have already an account? <a href="./login" class="blue">Sign in</a>
+          </p>
         </div>
       </div>
-      <script>
-        import anime from "animejs/lib/anime.es.js";
-        document.addEventListener("DOMContentLoaded", () => {
-          const applicantForm = document.getElementById("applicantForm");
-          const companyForm = document.getElementById("companyForm");
-          const registerButton = document.getElementById("registerButton");
-          const applicantBtn = document.getElementById("applicantBtn");
-          const companyBtn = document.getElementById("companyBtn");
-          const errorContainer = document.getElementById("errorContainer");
+    </div>
+    <script>
+      import anime from "animejs";
+      document.addEventListener("DOMContentLoaded", () => {
+        const applicantForm = document.getElementById("applicantForm");
+        const companyForm = document.getElementById("companyForm");
+        const registerButton = document.getElementById("registerButton");
+        const applicantBtn = document.getElementById("applicantBtn");
+        const companyBtn = document.getElementById("companyBtn");
+        const errorContainer = document.getElementById("errorContainer");
 
+        applicantForm.style.display = "block";
+        companyForm.style.display = "none";
+        applicantBtn.classList.add("active");
+        companyBtn.classList.remove("active");
+
+        applicantBtn.addEventListener("click", () => {
           applicantForm.style.display = "block";
           companyForm.style.display = "none";
           applicantBtn.classList.add("active");
           companyBtn.classList.remove("active");
-
-          applicantBtn.addEventListener("click", () => {
-            applicantForm.style.display = "block";
-            companyForm.style.display = "none";
-            applicantBtn.classList.add("active");
-            companyBtn.classList.remove("active");
-          });
-
-          companyBtn.addEventListener("click", () => {
-            applicantForm.style.display = "none";
-            companyForm.style.display = "block";
-            companyBtn.classList.add("active");
-            applicantBtn.classList.remove("active");
-          });
-          
-          registerButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            const selectedFormId = document.querySelector(".button.active").id;
-            const form = selectedFormId === "applicantBtn" ? applicantForm : companyForm;
-            const requiredInputs = form.querySelectorAll("input[required]");
-            let isFormValid = true;
-
-            requiredInputs.forEach((input) => {
-              if (input.value.trim() === "") {
-                isFormValid = false;
-                errorContainer.innerHTML = "Please fill all form values";
-                anime({
-                        targets: "#registerButton",
-                        translateX: ["-12rem", "0rem"],
-                        duration: 100,
-                        loop: 5,
-                        easing: "easeOutBack",
-                      });
-              }
-            });
-            if (isFormValid){
-              const selectedFormId = document.querySelector(".button.active").id; // Récupérez l'ID du formulaire actif
-
-              const form = selectedFormId === "applicantBtn" ? applicantForm : companyForm;
-
-              const formData = new FormData(form);
-              const formObject = {};
-
-              formData.forEach((value, key) => {
-                formObject[key] = value;
-              });
-              
-              console.log(formObject);
-              fetch(form.action, {
-                method: "POST",
-                body: JSON.stringify(formObject),
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              })
-                .then((response) => {
-                  if (response.status === 201) {
-                    return response.json();
-                  } else {
-                    anime({
-                      targets: "#registerButton",
-                      translateX: ["-12rem", "0rem"],
-                      duration: 100,
-                      loop: 5,
-                      easing: "easeOutBack",
-                    });
-                    throw new Error("Réponse de l'API différente de 200");
-                  }
-                })
-                .then((data) => {
-                  console.log(data);
-                  window.location.href = "./login";
-                })
-                .catch((error) => {
-                  console.error("Erreur :", error);
-                });
-            }
-          });
         });
 
-        document.addEventListener("DOMContentLoaded", () => {
-          const companyLocalisation = document.getElementById("companyLocalisation");
+        companyBtn.addEventListener("click", () => {
+          applicantForm.style.display = "none";
+          companyForm.style.display = "block";
+          companyBtn.classList.add("active");
+          applicantBtn.classList.remove("active");
+        });
 
-          // Initialisez l'objet d'autocomplétion de Google Maps
-          const autocomplete = new google.maps.places.Autocomplete(companyLocalisation);
+        registerButton.addEventListener("click", (e) => {
+          e.preventDefault();
+          const selectedFormId = document.querySelector(".button.active").id;
+          const form =
+            selectedFormId === "applicantBtn" ? applicantForm : companyForm;
+          const requiredInputs = form.querySelectorAll("input[required]");
+          let isFormValid = true;
 
-          // Écoutez l'événement de sélection d'un lieu
-          google.maps.event.addListener(autocomplete, "place_changed", function () {
+          requiredInputs.forEach((input) => {
+            if (input.value.trim() === "") {
+              isFormValid = false;
+              errorContainer.innerHTML = "Please fill all form values";
+              anime({
+                targets: "#registerButton",
+                translateX: ["-12rem", "0rem"],
+                duration: 100,
+                loop: 5,
+                easing: "easeOutBack",
+              });
+            }
+          });
+          if (isFormValid) {
+            const selectedFormId = document.querySelector(".button.active").id; // Récupérez l'ID du formulaire actif
+
+            const form =
+              selectedFormId === "applicantBtn" ? applicantForm : companyForm;
+
+            const formData = new FormData(form);
+            const formObject = {};
+
+            formData.forEach((value, key) => {
+              formObject[key] = value;
+            });
+
+            fetch(form.action, {
+              method: "POST",
+              body: JSON.stringify(formObject),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((response) => {
+                if (response.status === 201) {
+                  return response.json();
+                } else {
+                  anime({
+                    targets: "#registerButton",
+                    translateX: ["-12rem", "0rem"],
+                    duration: 100,
+                    loop: 5,
+                    easing: "easeOutBack",
+                  });
+                  throw new Error("Réponse de l'API différente de 200");
+                }
+              })
+              .then((data) => {
+                window.location.href = "./login";
+              })
+              .catch((error) => {
+                console.error("Erreur :", error);
+              });
+          }
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const companyLocalisation = document.getElementById(
+          "companyLocalisation",
+        );
+
+        // Initialisez l'objet d'autocomplétion de Google Maps
+        const autocomplete = new google.maps.places.Autocomplete(
+          companyLocalisation,
+        );
+
+        // Écoutez l'événement de sélection d'un lieu
+        google.maps.event.addListener(
+          autocomplete,
+          "place_changed",
+          function () {
             const place = autocomplete.getPlace();
 
             // Vous pouvez accéder aux détails du lieu, tels que la latitude, la longitude, etc.
-            console.log("Place details: ", place);
-          });
-        });
-        document.addEventListener("DOMContentLoaded", function() {
-          // Vérifier si un utilisateur est déjà connecté
-          const accessToken = localStorage.getItem('authKey');
-          console.log(accessToken)
-          if (accessToken) {
-            // Rediriger l'utilisateur vers la page d'accueil ou une autre page de votre choix
+          },
+        );
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Vérifier si un utilisateur est déjà connecté
+        const accessToken = localStorage.getItem("authKey");
+        if (accessToken) {
+          // Rediriger l'utilisateur vers la page d'accueil ou une autre page de votre choix
+          window.location.href = "./";
+        }
+        const cookies = document.cookie.split(";");
+        for (const cookie of cookies) {
+          const parts = cookie.trim().split("=");
+          if (parts[0] === "authKey") {
             window.location.href = "./";
           }
-          const cookies = document.cookie.split(';');
-          for (const cookie of cookies) {
-            const parts = cookie.trim().split('=');
-            if (parts[0] === 'authKey') {
-              window.location.href = "./";
-            }
-          }
+        }
 
-          const companyBtn = document.getElementById("companyBtn");
-          const applicantBtn = document.getElementById("applicantBtn");
-        
-          companyBtn.addEventListener("click", () => {
-            companyBtn.classList.add("active");
-            applicantBtn.classList.remove("active");
-          });
-        
-          applicantBtn.addEventListener("click", () => {
-            applicantBtn.classList.add("active");
-            companyBtn.classList.remove("active");
-          });
+        const companyBtn = document.getElementById("companyBtn");
+        const applicantBtn = document.getElementById("applicantBtn");
+
+        companyBtn.addEventListener("click", () => {
+          companyBtn.classList.add("active");
+          applicantBtn.classList.remove("active");
         });
-      </script>
-    </div>
+
+        applicantBtn.addEventListener("click", () => {
+          applicantBtn.classList.add("active");
+          companyBtn.classList.remove("active");
+        });
+      });
+    </script>
   </body>
+</html>
 
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-    .left {
-      position: absolute;
-      top: 0;
-      left: 0;
-      margin: 10px;
-      color: #fff;
-    }
-    .blue {
-      color: rgb(11, 11, 145);
-    }
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  .left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    color: #fff;
+  }
+  .blue {
+    color: rgb(11, 11, 145);
+  }
 
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 10px;
-      background: linear-gradient(-135deg, #000000, #474747);
-    }
-    .container {
-      max-width: 700px;
-      width: 100%;
-      background-color: #fff;
-      padding: 25px 30px;
-      border-radius: 5px;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-    }
-    .container .title {
-      font-size: 25px;
-      font-weight: 500;
-      position: relative;
-    }
-    .container .title::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      height: 3px;
-      width: 30px;
-      border-radius: 5px;
-      background: linear-gradient(-135deg, #000000, #474747);
-    }
-    .content form .user-details {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin: 20px 0 12px 0;
-    }
-    form .user-details .input-box {
-      margin-bottom: 15px;
-      width: calc(100% / 2 - 20px);
-    }
-    form .input-box span.details {
-      display: block;
-      font-weight: 500;
-      margin-bottom: 5px;
-    }
-    .user-details .input-box input {
-      height: 45px;
-      width: 100%;
-      outline: none;
-      font-size: 16px;
-      border-radius: 5px;
-      padding-left: 15px;
-      border: 1px solid #ccc;
-      border-bottom-width: 2px;
-      transition: all 0.3s ease;
-    }
-    .user-details .input-box input:focus,
-    .user-details .input-box input:valid {
-      border-color: #393939;
-    }
-    form .gender-details .gender-title {
-      font-size: 20px;
-      font-weight: 500;
-    }
-    form .category {
-      display: flex;
-      width: 80%;
-      margin: 14px 0;
-      justify-content: space-between;
-    }
-    form .category label {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-    form .category label .dot {
-      height: 18px;
-      width: 18px;
-      border-radius: 50%;
-      margin-right: 10px;
-      background: #d9d9d9;
-      border: 5px solid transparent;
-      transition: all 0.3s ease;
-    }
-    #dot-1:checked ~ .category label .one,
-    #dot-2:checked ~ .category label .two,
-    #dot-3:checked ~ .category label .three {
-      background: #393939;
-      border-color: #d9d9d9;
-    }
+  body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: linear-gradient(-135deg, #000000, #474747);
+  }
+  .container {
+    max-width: 700px;
+    width: 100%;
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  }
+  .container .title {
+    font-size: 25px;
+    font-weight: 500;
+    position: relative;
+  }
+  .container .title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 30px;
+    border-radius: 5px;
+    background: linear-gradient(-135deg, #000000, #474747);
+  }
+  .content form .user-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+  }
+  form .user-details .input-box {
+    margin-bottom: 15px;
+    width: calc(100% / 2 - 20px);
+  }
+  form .input-box span.details {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  .user-details .input-box input {
+    height: 45px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+  }
+  .user-details .input-box input:focus,
+  .user-details .input-box input:valid {
+    border-color: #393939;
+  }
+  form .gender-details .gender-title {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  form .category {
+    display: flex;
+    width: 80%;
+    margin: 14px 0;
+    justify-content: space-between;
+  }
+  form .category label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  form .category label .dot {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background: #d9d9d9;
+    border: 5px solid transparent;
+    transition: all 0.3s ease;
+  }
+  #dot-1:checked ~ .category label .one,
+  #dot-2:checked ~ .category label .two,
+  #dot-3:checked ~ .category label .three {
+    background: #393939;
+    border-color: #d9d9d9;
+  }
 
-    .button-container {
-      display: flex;
-      align-items: center;
-    }
+  .button-container {
+    display: flex;
+    align-items: center;
+  }
 
-    .button {
-      background: linear-gradient(-135deg, #000000, #474747);
-      color: #fff;
-      font-size: 20px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      border-radius: 25px;
-      height: 50px;
-      flex: 1; /* Utilisez flex pour les boutons */
-      margin: 10px;
-      transition: all 0.3s ease;
-    }
+  .button {
+    background: linear-gradient(-135deg, #000000, #474747);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+    height: 50px;
+    flex: 1; /* Utilisez flex pour les boutons */
+    margin: 10px;
+    transition: all 0.3s ease;
+  }
 
-    .button.active {
+  .button.active {
     transform: scale(0.95);
     background: white;
     border: 2px solid #262626;
     color: #262626;
   }
-    form .field input:focus ~ label,
-    form .field input:valid ~ label {
-      top: 0%;
-      font-size: 16px;
-      color: #393939;
-      background: #fff;
-      transform: translateY(-50%);
+  form .field input:focus ~ label,
+  form .field input:valid ~ label {
+    top: 0%;
+    font-size: 16px;
+    color: #393939;
+    background: #fff;
+    transform: translateY(-50%);
+  }
+  @media (max-width: 584px) {
+    .container {
+      max-width: 100%;
     }
-    @media (max-width: 584px) {
-      .container {
-        max-width: 100%;
-      }
-      form .user-details .input-box {
-        margin-bottom: 15px;
-        width: 100%;
-      }
-      form .category {
-        width: 100%;
-      }
-      .content form .user-details {
-        max-height: 300px;
-        overflow-y: scroll;
-      }
-      .user-details::-webkit-scrollbar {
-        width: 5px;
-      }
+    form .user-details .input-box {
+      margin-bottom: 15px;
+      width: 100%;
     }
-    @media (max-width: 459px) {
-      .container .content .category {
-        flex-direction: column;
-      }
+    form .category {
+      width: 100%;
     }
-    @keyframes pulse {
-      0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(200, 200, 200, 0.7);
-      }
-      70% {
-        transform: scale(1);
-        box-shadow: 0 0 8px 10px rgba(200, 200, 200, 0);
-      }
-      100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(200, 200, 200, 0);
-      }
+    .content form .user-details {
+      max-height: 300px;
+      overflow-y: scroll;
     }
-  </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCps-r0lYzi602FJrqNfT_hpKoN1Ntdk9o&libraries=places"></script>
-</html>
+    .user-details::-webkit-scrollbar {
+      width: 5px;
+    }
+  }
+  @media (max-width: 459px) {
+    .container .content .category {
+      flex-direction: column;
+    }
+  }
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(200, 200, 200, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 8px 10px rgba(200, 200, 200, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(200, 200, 200, 0);
+    }
+  }
+</style>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=YOUT_KEY_HERE&libraries=places"
+></script>

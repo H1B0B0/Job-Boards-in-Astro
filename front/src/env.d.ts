@@ -10,4 +10,5 @@ declare function expandComponent(index: number): void;
 declare function deleteComponent(index: number): void;
 declare function editComponent(index: number): void;
 declare function CreateComponent(index: number): void;
+declare module "animejs";
 

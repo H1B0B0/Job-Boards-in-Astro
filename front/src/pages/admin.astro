@@ -10,27 +10,42 @@ let User = [];
 try {
   Advert = await fetchJobs();
 } catch (error) {
-  console.error("Une erreur s'est produite lors du chargement des annonces:", error);
+  console.error(
+    "Une erreur s'est produite lors du chargement des annonces:",
+    error,
+  );
 }
 
 try {
   Companies = await fetchCompanies();
 } catch (error) {
-  console.error("Une erreur s'est produite lors du chargement des entreprises:", error);
+  console.error(
+    "Une erreur s'est produite lors du chargement des entreprises:",
+    error,
+  );
 }
 
 try {
   User = await fetchUser();
 } catch (error) {
-  console.error("Une erreur s'est produite lors du chargement des utilisateurs:", error);
+  console.error(
+    "Une erreur s'est produite lors du chargement des utilisateurs:",
+    error,
+  );
 }
 ---
 
 <Layout title="Pricing">
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCps-r0lYzi602FJrqNfT_hpKoN1Ntdk9o&libraries=places"
-  ></script>  
-  <div class={`blur ${Advert.length === 0 && Companies.length === 0 && User.length === 0 ? 'active' : ''}`} id="general-div">
+  ></script>
+  <div
+    class={`blur ${
+      Advert.length === 0 && Companies.length === 0 && User.length === 0
+        ? "active"
+        : ""
+    }`}
+    id="general-div">
     <section class="contener">
       <div>
         <div class="wrapper">
@@ -54,8 +69,7 @@ try {
                     data-element-type="company">
                     Read More
                   </button>
-                  <div class="values-display" id="values-display">
-                  </div>
+                  <div class="values-display" id="values-display" />
                   <div class="button-container">
                     <button
                       id={element.id}
@@ -96,7 +110,11 @@ try {
               Advert.map((element, index) => (
                 <div class="component" id={`advertissements-${index}`}>
                   <h1 class="title_card">{element.title}</h1>
-                  <h2 class="little_title_card">{element.company && element.company.name ? element.company.name : ""}</h2>
+                  <h2 class="little_title_card">
+                    {element.company && element.company.name
+                      ? element.company.name
+                      : ""}
+                  </h2>
                   <button
                     class="read-more"
                     onclick="expandComponent(event)"
@@ -104,8 +122,7 @@ try {
                     data-element-type="advertissements">
                     Read More
                   </button>
-                  <div class="values-display" id="values-display">
-                  </div>
+                  <div class="values-display" id="values-display" />
                   <div class="button-container">
                     <button
                       id={element.id}
@@ -156,8 +173,7 @@ try {
                     data-element-type="user">
                     Read More
                   </button>
-                  <div class="values-display" id="values-display">
-                  </div>
+                  <div class="values-display" id="values-display" />
                   <div class="button-container">
                     <button
                       id={element.id}
@@ -201,9 +217,8 @@ try {
   }
 
   .blur.active {
-  filter: none; /* Supprime le flou lorsque la classe active est présente */
-}
-
+    filter: none; /* Supprime le flou lorsque la classe active est présente */
+  }
 
   .input_description {
     height: 100%;
@@ -524,14 +539,12 @@ try {
 
   if (accessToken) {
     payloadObj = parseToken(accessToken);
-    console.log(payloadObj);
   } else {
     const cookies = document.cookie.split(";");
     for (const cookie of cookies) {
       const [cookieName, cookieValue] = cookie.trim().split("=");
       if (cookieName === "authKey") {
         payloadObj = parseToken(cookieValue);
-        console.log(payloadObj);
         break;
       }
     }
@@ -547,86 +560,83 @@ try {
   }
 
   function expandComponent(event) {
-  const target = event.target;
-  const index = parseInt(target.getAttribute("data-index"));
-  const elementType = target.getAttribute("data-element-type");
+    const target = event.target;
+    const index = parseInt(target.getAttribute("data-index"));
+    const elementType = target.getAttribute("data-element-type");
 
-  // Utilisez le type d'élément pour créer l'ID de l'élément
-  const component = document.getElementById(`${elementType}-${index}`);
+    // Utilisez le type d'élément pour créer l'ID de l'élément
+    const component = document.getElementById(`${elementType}-${index}`);
 
-  if (component) {
-    component.classList.add("expanded");
+    if (component) {
+      component.classList.add("expanded");
 
-    const deleteButton = component.querySelector(".delete");
-    const editButton = component.querySelector(".edit");
+      const deleteButton = component.querySelector(".delete");
+      const editButton = component.querySelector(".edit");
 
-    if (deleteButton && editButton) {
-      deleteButton.style.display = "block";
-      editButton.style.display = "block";
-    }
+      if (deleteButton && editButton) {
+        deleteButton.style.display = "block";
+        editButton.style.display = "block";
+      }
 
-    const readMoreButton = component.querySelector(".read-more");
-    if (readMoreButton) {
-      readMoreButton.style.display = "none";
-    }
+      const readMoreButton = component.querySelector(".read-more");
+      if (readMoreButton) {
+        readMoreButton.style.display = "none";
+      }
 
-    // Récupérez les données de l'élément
-    const valuesDisplay = component.querySelector(".values-display");
-    valuesDisplay.innerHTML = "";
+      // Récupérez les données de l'élément
+      const valuesDisplay = component.querySelector(".values-display");
+      valuesDisplay.innerHTML = "";
 
-    fetch(`http://localhost:3000/${elementType}/${target.id}`)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error("Réponse de l'API différente de 200");
-        }
-      })
-      .then((data) => {
+      fetch(`http://localhost:3000/${elementType}/${target.id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            throw new Error("Réponse de l'API différente de 200");
+          }
+        })
+        .then((data) => {
+          // Create a div to display values
+          const values = document.createElement("div");
 
-        // Create a div to display values
-        const values = document.createElement("div");
-
-        // Check the element type and exclude specific properties
-        for (const key in data[index]) {
-          if (
+          // Check the element type and exclude specific properties
+          for (const key in data[index]) {
+            if (
               key !== "password" &&
               (elementType !== "company" ||
                 (key !== "localisation" && key !== "name")) &&
-              (elementType !== "advertissements" ||
-                (key !== "name"))
+              (elementType !== "advertissements" || key !== "name")
             ) {
-            const label = document.createElement("label");
-            label.textContent = key;
-            label.style.margin = "5px";
-            label.style.fontWeight = "400";
-            label.style.fontSize = "20px";
+              const label = document.createElement("label");
+              label.textContent = key;
+              label.style.margin = "5px";
+              label.style.fontWeight = "400";
+              label.style.fontSize = "20px";
 
-            const p = document.createElement("p");
-            if (key=="company"&& elementType == "advertissements"){
-              p.textContent = data[index][key].name || "No data";
+              const p = document.createElement("p");
+              if (key == "company" && elementType == "advertissements") {
+                p.textContent = data[index][key].name || "No data";
+              } else {
+                p.textContent = data[index][key] || "No data";
+              }
+              p.style.height = "100%";
+              p.style.width = "100%";
+              p.style.fontSize = "15px";
+              p.style.border = "1px solid lightgrey";
+              p.style.borderRadius = "3px";
+              p.style.padding = "10px";
+
+              p.setAttribute("autocomplete", key);
+
+              label.appendChild(p);
+              values.appendChild(label);
             }
-            else{
-              p.textContent = data[index][key] || "No data";
-            }
-            p.style.height = "100%";
-            p.style.width = "100%";
-            p.style.fontSize = "15px";
-            p.style.border = "1px solid lightgrey";
-            p.style.borderRadius = "3px";
-            p.style.padding = "10px";
-
-            p.setAttribute("autocomplete", key);
-
-            label.appendChild(p);
-            values.appendChild(label);
           }
-        }
 
-        valuesDisplay.appendChild(values);
-      });
+          valuesDisplay.appendChild(values);
+        });
+    }
   }
-}
 
   function deleteComponent(event) {
     const target = event.target;
@@ -677,7 +687,6 @@ try {
         }
       })
       .then((data) => {
-        console.log(data);
         // Créez une boîte de dialogue modale (modal) pour le formulaire
         const modal = document.createElement("div");
         modal.style.position = "fixed"; // Position fixe pour le centrage
@@ -739,7 +748,6 @@ try {
         // Gérez la soumission du formulaire
         form.addEventListener("submit", (e) => {
           e.preventDefault();
-          console.log("here");
 
           // Récupérez les données du formulaire
           const formData = new FormData(form);
@@ -788,159 +796,189 @@ try {
   }
 
   function CreateComponent(event) {
-  const target = event.target;
-  const elementType = target.getAttribute("data-element-type");
+    const target = event.target;
+    const elementType = target.getAttribute("data-element-type");
 
-  // Créez une boîte de dialogue modale pour le formulaire de création
-  const modal = document.createElement("div");
-  modal.style.position = "fixed";
-  modal.style.top = "50%";
-  modal.style.left = "50%";
-  modal.style.transform = "translate(-50%, -50%)";
-  modal.style.backgroundColor = "white";
-  modal.style.boxShadow = "30px 30px 30px rgba(0, 0, 0, 0.1)";
-  modal.style.borderColor = "#000000";
-  modal.style.borderWidth = "2px";
-  modal.style.borderRadius = "15px";
-  modal.classList.add("modal");
+    // Créez une boîte de dialogue modale pour le formulaire de création
+    const modal = document.createElement("div");
+    modal.style.position = "fixed";
+    modal.style.top = "50%";
+    modal.style.left = "50%";
+    modal.style.transform = "translate(-50%, -50%)";
+    modal.style.backgroundColor = "white";
+    modal.style.boxShadow = "30px 30px 30px rgba(0, 0, 0, 0.1)";
+    modal.style.borderColor = "#000000";
+    modal.style.borderWidth = "2px";
+    modal.style.borderRadius = "15px";
+    modal.classList.add("modal");
 
-  // Créez un formulaire pour la création
-  const form = document.createElement("form");
-  form.classList.add("field");
-  form.style.display = "flex";
-  form.style.flexDirection = "column";
-  form.style.alignItems = "top";
-  form.style.margin = "10px";
+    // Créez un formulaire pour la création
+    const form = document.createElement("form");
+    form.classList.add("field");
+    form.style.display = "flex";
+    form.style.flexDirection = "column";
+    form.style.alignItems = "top";
+    form.style.margin = "10px";
 
-  // Créez des champs de formulaire pour les données spécifiques à chaque type
-  if (elementType === "company") {
-    createCompanyFields(form);
-  } else if (elementType === "user") {
-    createUserFields(form);
-  } else {
-    createAdvertFields(form);
+    // Créez des champs de formulaire pour les données spécifiques à chaque type
+    if (elementType === "company") {
+      createCompanyFields(form);
+    } else if (elementType === "user") {
+      createUserFields(form);
+    } else {
+      createAdvertFields(form);
+    }
+
+    // Créez un bouton "OK" pour soumettre le formulaire
+    const okButton = document.createElement("button");
+    okButton.textContent = "OK";
+
+    // Gérez la soumission du formulaire
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Récupérez les données du formulaire
+      const formData = new FormData(form);
+      const formDataObject = {};
+
+      formData.forEach((value, key) => {
+        formDataObject[key] = value;
+      });
+      // Effectuez une requête POST pour créer l'élément
+      fetch(`http://localhost:3000/${elementType}`, {
+        method: "POST",
+        body: JSON.stringify(formDataObject),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.status === 201) {
+            modal.remove();
+            location.reload();
+          } else {
+            throw new Error("Échec de la création");
+          }
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la création :", error);
+        });
+    });
+
+    form.appendChild(okButton);
+    modal.appendChild(form);
+
+    // Ajoutez la boîte de dialogue modale au DOM
+    document.body.appendChild(modal);
   }
 
-  // Créez un bouton "OK" pour soumettre le formulaire
-  const okButton = document.createElement("button");
-  okButton.textContent = "OK";
+  function createCompanyFields(form) {
+    const nameField = createInputField("name", "Nom de l'entreprise", "text");
+    const localisationField = createInputField(
+      "localisation",
+      "Localisation de l'entreprise",
+      "text",
+    );
+    const emailField = createInputField("email", "Adresse email", "email");
+    const loginField = createInputField("login", "Nom d'utilisateur", "text");
+    const passwordField = createInputField(
+      "password",
+      "Mot de passe",
+      "password",
+    );
 
-  // Gérez la soumission du formulaire
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+    form.appendChild(nameField);
+    form.appendChild(localisationField);
+    form.appendChild(emailField);
+    form.appendChild(loginField);
+    form.appendChild(passwordField);
+  }
 
-    // Récupérez les données du formulaire
-    const formData = new FormData(form);
-    const formDataObject = {};
+  function createUserFields(form) {
+    const lastNameField = createInputField(
+      "lastname",
+      "Nom de famille",
+      "text",
+    );
+    const nameField = createInputField("name", "Prénom", "text");
+    const emailField = createInputField("email", "Adresse email", "email");
+    const loginField = createInputField("login", "Nom d'utilisateur", "text");
+    const passwordField = createInputField(
+      "password",
+      "Mot de passe",
+      "password",
+    );
 
-    formData.forEach((value, key) => {
-      formDataObject[key] = value;
-    });
-    // Effectuez une requête POST pour créer l'élément
-    fetch(`http://localhost:3000/${elementType}`, {
-      method: "POST",
-      body: JSON.stringify(formDataObject),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (response.status === 201) {
-          modal.remove();
-          location.reload();
-        } else {
-          throw new Error("Échec de la création");
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la création :", error);
-      });
-  });
+    form.appendChild(lastNameField);
+    form.appendChild(nameField);
+    form.appendChild(emailField);
+    form.appendChild(loginField);
+    form.appendChild(passwordField);
+  }
 
-  form.appendChild(okButton);
-  modal.appendChild(form);
+  function createAdvertFields(form) {
+    const titleField = createInputField("title", "Titre de l'annonce", "text");
+    const descriptionField = createInputField(
+      "description",
+      "Description",
+      "text",
+    );
+    const numField = createInputField("num", "Numéro de téléphone", "text");
+    const localisationField = createInputField(
+      "localisation",
+      "Localisation",
+      "text",
+    );
+    const posteField = createInputField("poste", "Poste", "text");
+    const typeContratField = createInputField(
+      "typeContrat",
+      "Type de contrat",
+      "text",
+    );
+    const horairesField = createInputField(
+      "horraires",
+      "Horaires de travail",
+      "text",
+    );
+    const payField = createInputField("pay", "Salaire", "text");
+    const idcompany = createInputField("company", "IdCompany", "Number");
+    form.appendChild(titleField);
+    form.appendChild(descriptionField);
+    form.appendChild(numField);
+    form.appendChild(localisationField);
+    form.appendChild(posteField);
+    form.appendChild(typeContratField);
+    form.appendChild(horairesField);
+    form.appendChild(payField);
+    form.appendChild(idcompany);
+  }
 
-  // Ajoutez la boîte de dialogue modale au DOM
-  document.body.appendChild(modal);
-}
+  function createInputField(name, label, type) {
+    const field = document.createElement("div");
+    field.classList.add("field");
 
-function createCompanyFields(form) {
+    const labelElement = document.createElement("label");
+    labelElement.textContent = label;
+    labelElement.style.margin = "5px";
+    labelElement.style.fontWeight = "400";
+    labelElement.style.fontSize = "20px";
+    field.appendChild(labelElement);
 
-  const nameField = createInputField("name", "Nom de l'entreprise", "text");
-  const localisationField = createInputField("localisation", "Localisation de l'entreprise", "text");
-  const emailField = createInputField("email", "Adresse email", "email");
-  const loginField = createInputField("login", "Nom d'utilisateur", "text");
-  const passwordField = createInputField("password", "Mot de passe", "password");
+    const inputElement = document.createElement("input");
+    inputElement.style.height = "100%";
+    inputElement.style.width = "100%";
+    inputElement.style.outline = "none";
+    inputElement.style.fontSize = "15px";
+    inputElement.style.border = "1px solid lightgrey";
+    inputElement.style.borderRadius = "25px";
+    inputElement.style.padding = "10px";
+    inputElement.name = name;
+    inputElement.type = type;
+    inputElement.required = true;
+    field.appendChild(inputElement);
 
-  form.appendChild(nameField);
-  form.appendChild(localisationField);
-  form.appendChild(emailField);
-  form.appendChild(loginField);
-  form.appendChild(passwordField);
-}
-
-function createUserFields(form) {
-  const lastNameField = createInputField("lastname", "Nom de famille", "text");
-  const nameField = createInputField("name", "Prénom", "text");
-  const emailField = createInputField("email", "Adresse email", "email");
-  const loginField = createInputField("login", "Nom d'utilisateur", "text");
-  const passwordField = createInputField("password", "Mot de passe", "password");
-
-  form.appendChild(lastNameField);
-  form.appendChild(nameField);
-  form.appendChild(emailField);
-  form.appendChild(loginField);
-  form.appendChild(passwordField);
-}
-
-function createAdvertFields(form) {
-  const titleField = createInputField("title", "Titre de l'annonce", "text");
-  const descriptionField = createInputField("description", "Description", "text");
-  const numField = createInputField("num", "Numéro de téléphone", "text");
-  const localisationField = createInputField("localisation", "Localisation", "text");
-  const posteField = createInputField("poste", "Poste", "text");
-  const typeContratField = createInputField("typeContrat", "Type de contrat", "text");
-  const horairesField = createInputField("horraires", "Horaires de travail", "text");
-  const payField = createInputField("pay", "Salaire", "text");
-  const idcompany = createInputField("company", "IdCompany", "Number");
-  console.log("here")
-  form.appendChild(titleField);
-  form.appendChild(descriptionField);
-  form.appendChild(numField);
-  form.appendChild(localisationField);
-  form.appendChild(posteField);
-  form.appendChild(typeContratField);
-  form.appendChild(horairesField);
-  form.appendChild(payField);
-  form.appendChild(idcompany);
-}
-
-function createInputField(name, label, type) {
-  const field = document.createElement("div");
-  field.classList.add("field");
-
-  const labelElement = document.createElement("label");
-  labelElement.textContent = label;
-  labelElement.style.margin = "5px";
-  labelElement.style.fontWeight = "400";
-  labelElement.style.fontSize = "20px";
-  field.appendChild(labelElement);
-
-  const inputElement = document.createElement("input");
-  inputElement.style.height = "100%";
-  inputElement.style.width = "100%";
-  inputElement.style.outline = "none";
-  inputElement.style.fontSize = "15px";
-  inputElement.style.border = "1px solid lightgrey";
-  inputElement.style.borderRadius = "25px";
-  inputElement.style.padding = "10px";
-  inputElement.name = name;
-  inputElement.type = type;
-  inputElement.required = true;
-  field.appendChild(inputElement);
-
-  return field;
-}
+    return field;
+  }
 
   window.expandComponent = expandComponent;
   window.deleteComponent = deleteComponent;

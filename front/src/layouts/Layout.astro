@@ -6,27 +6,28 @@ import "@fontsource-variable/inter/index.css";
 import SearchBar from "@components/SearchBar.astro";
 export interface Props {
   title: string;
+  googleMapsApiKey?: string;
 }
 import { ViewTransitions } from "astro:transitions";
 
-const { title } = Astro.props;
+const { title, googleMapsApiKey } = Astro.props;
 
 const makeTitle = title
   ? title + " | " + "InDev"
   : "InDev - Starter Template for Astro with Tailwind CSS";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href=""
+  <script
+    src=`https://maps.googleapis.com/maps/api/js?key=YOUR_KEYHERE&libraries=places`
+  ></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <link rel="icon" type="image/svg+xml" href="" <SEO />
 
-    <SEO>
-  </head>
   <body>
-    <Navbar/>
+    <Navbar />
     <slot />
     <Footer />
     <style is:global>
@@ -35,5 +36,5 @@ const makeTitle = title
       }
     </style>
   </body>
-  <ViewTransitions/>
+  <ViewTransitions />
 </html>

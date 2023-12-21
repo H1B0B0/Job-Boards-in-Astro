@@ -8,9 +8,8 @@ const menuitems = [
   {
     title: "Accueil",
     path: "/",
-
   },
-  
+
   {
     title: "Jobs",
     path: "/jobs",
@@ -18,12 +17,11 @@ const menuitems = [
   {
     title: "Contact",
     path: "/contact",
-  }, 
+  },
   {
     title: "Admin Panel",
     path: "/admin",
   },
-  
 ];
 ---
 
@@ -73,67 +71,66 @@ const menuitems = [
         </ul>
       </MenuItems>
       <div>
-      <a style="margin: 10px;" id="loginOrManageLink" href="./manage">Manage</a>
-      <Link id="logoutOrSignupLink" size="md">Déconnexion</Link>
+        <a style="margin: 10px;" id="loginOrManageLink" href="./manage"
+          >Manage</a
+        >
+        <Link id="logoutOrSignupLink" size="md">Déconnexion</Link>
       </div>
     </Astronav>
   </header>
   <script>
-// Fonction pour gérer la déconnexion
-function logout() {
-  // Supprimer le cookie "authKey" s'il existe
-  document.cookie = 'authKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-  // Supprimer l'access token du localStorage
-  localStorage.removeItem('authKey');
-  // Recharger la page
-  location.reload();
-}
+    function init() {
+      buttondisplay();
+      // Fonction pour gérer la déconnexion
+      function logout(event) {
+        event.preventDefault(); // Prévenir le comportement par défaut du lien
 
-// Fonction pour gérer l'affichage des boutons
-function buttondisplay() {
-  // Vérifier la présence de l'access token dans localStorage
-  const accessToken = localStorage.getItem('authKey');
-  
-  // Sélectionner les éléments des liens "Manage" et "Déconnexion"
-  const loginOrManageLink = document.getElementById('loginOrManageLink');
-  const logoutOrSignupLink = document.getElementById('logoutOrSignupLink');
+        // Supprimer le cookie "authKey" s'il existe
+        document.cookie =
+          "authKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        // Supprimer l'access token du localStorage
+        localStorage.removeItem("authKey");
+        // Recharger la page
+        location.reload();
+      }
 
-  // Vérifier si un cookie "authKey" existe
-  const cookies = document.cookie.split(';');
-  let authKeyCookieFound = false;
-  for (const cookie of cookies) {
-    const parts = cookie.trim().split('=');
-    if (parts[0] === 'authKey') {
-      authKeyCookieFound = true;
-      break;
+      // Fonction pour gérer l'affichage des boutons
+      function buttondisplay() {
+        // Vérifier la présence de l'access token dans localStorage
+        const accessToken = localStorage.getItem("authKey");
+
+        // Sélectionner les éléments des liens "Manage" et "Déconnexion"
+        const loginOrManageLink = document.getElementById("loginOrManageLink");
+        const logoutOrSignupLink =
+          document.getElementById("logoutOrSignupLink");
+
+        // Vérifier si un cookie "authKey" existe
+        const authKeyCookieFound = document.cookie
+          .split(";")
+          .some((cookie) => cookie.trim().startsWith("authKey="));
+
+        // Gérer le texte et l'action des liens en fonction de la présence du cookie et de l'access token
+        if (authKeyCookieFound || accessToken) {
+          // Si un cookie "authKey" ou un access token est présent
+          loginOrManageLink.href = "./manage"; // URL de gestion
+          loginOrManageLink.textContent = "Manage";
+
+          logoutOrSignupLink.textContent = "Déconnexion";
+          logoutOrSignupLink.removeEventListener("click", logout); // Enlever l'ancien gestionnaire d'événement
+          logoutOrSignupLink.addEventListener("click", logout); // Ajouter la nouvelle fonction de déconnexion
+          logoutOrSignupLink.href = "#"; // Ajouter un href pour activer le style de lien
+        } else {
+          // Si ni le cookie ni l'access token ne sont présents
+          loginOrManageLink.href = "./login"; // URL de connexion
+          loginOrManageLink.textContent = "Log in";
+
+          logoutOrSignupLink.textContent = "Sign Up";
+          logoutOrSignupLink.href = "./signup"; // URL d'inscription
+          logoutOrSignupLink.removeEventListener("click", logout); // Enlever le gestionnaire d'événement de déconnexion
+        }
+      }
     }
-  }
-
-  // Gérer le texte et l'action des liens en fonction de la présence du cookie et de l'access token
-  if (authKeyCookieFound || accessToken) {
-    // Si un cookie "authKey" ou un access token est présent, changer le lien "Manage" en "Déconnexion" avec l'URL appropriée // Mettez l'URL de déconnexion ici
-    logoutOrSignupLink.textContent = "Déconnexion";
-    logoutOrSignupLink.addEventListener('click', logout); // Ajouter la fonction de déconnexion
-    logoutOrSignupLink.style.cursor = "pointer";
-
-    
-    // Changer le lien "Déconnexion" en "Manage" avec l'URL appropriée
-    loginOrManageLink.href = "./manage"; // Mettez l'URL de gestion ici
-    loginOrManageLink.textContent = "Manage";
-  } else {
-    // Si ni le cookie ni l'access token ne sont présents, remettre le lien "Manage" avec l'URL de gestion appropriée
-    loginOrManageLink.href = "./login"; // Mettez l'URL de gestion ici
-    loginOrManageLink.textContent = "Log in";
-    
-    // Changer le lien "Déconnexion" en "Log in" avec l'URL d'authentification appropriée
-    logoutOrSignupLink.href = "./signup"; // Mettez l'URL de connexion ici
-    logoutOrSignupLink.textContent = "Sign Up";
-    logoutOrSignupLink.style.cursor = "pointer";
-
-  }
-}
-
-// Exécuter la fonction lors du chargement de la page
-window.addEventListener('DOMContentLoaded', buttondisplay);
+    document.addEventListener("astro:page-load", init);
+    window.addEventListener("astro:after-swap", init);
   </script>
 </Container>
