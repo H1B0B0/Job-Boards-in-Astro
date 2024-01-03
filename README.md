@@ -2,6 +2,14 @@
 
 This project was carried out as part of my pre-MSC bootcamp at Epitech. We had two weeks to create a job board site similar to Indeed.
 
+## Back Readme
+
+[Back Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/back#readme)
+
+## Front Readme
+
+[Front Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/front#readme)
+
 ## Step
 
 **Step 1**: We use PostgreSQL for the database.
@@ -16,11 +24,4 @@ This project was carried out as part of my pre-MSC bootcamp at Epitech. We had t
 
 ![NestJS Logo](https://upload.wikimedia.org/wikipedia/commons/a/a8/NestJS.svg)
 
-## Back Readme
-
-[Back Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/back#readme)
-
-## Front Readme
-
-[Front Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/front#readme)
 
