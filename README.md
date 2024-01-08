@@ -10,18 +10,40 @@ This project was carried out as part of my pre-MSC bootcamp at Epitech. We had t
 
 [Front Readme](https://github.com/H1B0B0/Job-Boards-in-Astro/tree/main/front#readme)
 
-## Step
+> The Job Board Web Project is a sophisticated platform for posting and applying for jobs. It features a front end developed in Astro and a robust, dockerized NestJS backend, integrating seamlessly with a PostgreSQL database.
 
-**Step 1**: We use PostgreSQL for the database.
+## Description
 
-![PostgreSQL Elephant](https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png)
+This project presents a comprehensive job board web application, designed to facilitate the process of job advertising and applications. It involves creating a dynamic and responsive website using Astro and developing a reliable backend system with NestJS, dockerized for ease of deployment and scalability. The application uses PostgreSQL for data management, ensuring efficient and secure handling of job listings and user data.
 
-**Step 2-3**: We use Astro framework for the frontend.
+### Key Features
 
-![Astro Logo](https://www.svgrepo.com/show/373446/astro.svg)
+- **Dynamic Job Listings**: Jobs are listed dynamically with options to view more details without page reloads.
+- **CRUD API**: A fully functional CRUD (Create, Read, Update, Delete) API for managing job listings and applications.
+- **Responsive Design**: User-friendly and responsive design, adaptable to various screen sizes and devices.
+- **User Authentication**: Secure user authentication system, simplifying the application process for registered users.
+- **Admin Dashboard**: A specialized admin dashboard for monitoring and managing database records, accessible only to authenticated admin users.
+- **Procedural Database Structure**: Well-structured SQL database with tables for advertisements, companies, applicants, and more.
+- **Real-Time Application Form**: An interactive form for job applications, enhancing user engagement and experience.
 
-**Step 4**: We use NestJS framework for the API(CRUD).
+## Project Setup
 
-![NestJS Logo](https://upload.wikimedia.org/wikipedia/commons/a/a8/NestJS.svg)
+Ensure the following tools are installed and set up:
+
+- [PostgreSQL](https://www.postgresql.org/)
+- [Docker](https://www.docker.com/)
+- [NestJS](https://nestjs.com/)
+- [Astro](https://astro.build/)
+
+## How to Use
+
+1. Clone the repository to your local machine:
+   ```bash
+   git clone git@github.com:H1B0B0/Job-Boards-in-Astro.git
+   ```
+2. Navigate to the project directory and start the dockerized backend.
+3. Launch the Astro front end and explore the job listings and application features.
+
+## The link to the [Github Repository](https://github.com/H1B0B0/Job-Boards-in-Astro)
 
 
