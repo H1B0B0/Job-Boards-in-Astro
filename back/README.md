@@ -36,8 +36,9 @@ $ docker-compose --env-file .env up -d
 
 ## Techno used for the project
 
-**We use PostgreSQL for the database.**
-![PostgreSQL Elephant](https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png)
+**We use PostgreSQL for the database, and NestJS for the Api(CRUD)**
 
-**We use NestJs for the Api(CRUD).**
-![NestJS Logo](https://upload.wikimedia.org/wikipedia/commons/a/a8/NestJS.svg)
+<div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png" alt="PostgreSQL Elephant" width="300">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/NestJS.svg" alt="NestJS Logo" width="330">
+</div>
